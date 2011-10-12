@@ -20,32 +20,55 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_CONNECTION_HPP
-#define SLIRC_CONNECTION_HPP
+#ifndef SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
+#define SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
 
-#include "config.hpp"
+#include "../config.hpp"
 
-#include "module.hpp"
+#include <map>
+#include <memory>
+#include <mutex>
+#include <typeinfo>
+
+#include <boost/utility.hpp>
 
 namespace slirc {
 
-/**
- * abstract base class for connection modules
- */
-class connection : public module<connection> {
-protected:
-	SLIRCAPI connection(const slirc::context &context);
+class module_base;
 
-	virtual void connect() = 0;
+namespace detail {
 
+class context_implementation {
 public:
-	struct connected_event {};
-	struct disconnected_event {};
+	typedef std::type_info const * module_key_type;
+	typedef module_base *          module_value_type;
+
+	context_implementation();
+	~context_implementation();
+
+	context_implementation(const context_implementation &) = delete;
+	context_implementation &operator=(const context_implementation &) = delete;
+
+	bool SLIRCAPI load_module(module_key_type, module_value_type);
+	inline bool unload_module(module_key_type which) {
+		return do_unload_module(which);
+	}
+	module_value_type SLIRCAPI get_module(module_key_type);
+	const module_value_type SLIRCAPI get_module(module_key_type) const;
+
+	template<typename Module> static inline module_key_type module_key() {
+		typedef typename Module::lookup_module lookup_type;
+		return &typeid(lookup_type);
+	}
+
+private:
+	bool SLIRCAPI do_unload_module(module_key_type, bool force=false);
+
+	typedef std::map<module_key_type, module_value_type> module_map;
+	module_map modules;
 };
 
 }
+}
 
-// declare default implementation
-#include "socket_connection.hpp"
-
-#endif // SLIRC_CONNECTION_HPP
+#endif // SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP

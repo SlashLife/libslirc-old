@@ -20,32 +20,15 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_CONNECTION_HPP
-#define SLIRC_CONNECTION_HPP
+#include "context.hpp"
 
-#include "config.hpp"
-
-#include "module.hpp"
-
-namespace slirc {
-
-/**
- * abstract base class for connection modules
- */
-class connection : public module<connection> {
-protected:
-	SLIRCAPI connection(const slirc::context &context);
-
-	virtual void connect() = 0;
-
-public:
-	struct connected_event {};
-	struct disconnected_event {};
-};
-
+slirc::weak_context::weak_context()
+: impl() {
 }
 
-// declare default implementation
-#include "socket_connection.hpp"
+slirc::weak_context::weak_context(const context &other)
+: impl(other.impl) {}
 
-#endif // SLIRC_CONNECTION_HPP
+slirc::context slirc::weak_context::lock() const {
+	return context(*this);
+}

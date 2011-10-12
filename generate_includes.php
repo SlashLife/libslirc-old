@@ -1,7 +1,7 @@
 <?php
 
-define('TARGET_DIR', dirname(dirname(__FILE__)).'/include/slirc/');
-define('SOURCE_DIR', dirname(dirname(__FILE__)).'/source/');
+define('TARGET_DIR', dirname(__FILE__).'/include/slirc/');
+define('SOURCE_DIR', dirname(__FILE__).'/source/');
 define('TRANSLATE_PATH', '/../source/');
 
 $dirs = array(SOURCE_DIR);

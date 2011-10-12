@@ -1,5 +1,5 @@
 /***************************************************************************
-**  Copyright 2010 by Simon "SlashLife" Stienen                           **
+**  Copyright 2010-2011 by Simon "SlashLife" Stienen                           **
 **  http://projects.slashlife.org/libslirc/                               **
 **  libslirc@projects.slashlife.org                                       **
 **                                                                        **
@@ -25,32 +25,58 @@
 
 #include "config.hpp"
 
+#include "context.hpp"
+
 namespace slirc {
 
-class connection;
+class module_base;
 
-template<typename T> struct module_traits {
-	typedef T default_implementation;
+/**
+ * A template function returning the type of the default implementation for a
+ * module. Module implementations should specify themselves, whereas abstract
+ * module APIs should specify their default implementation, if it exists.
+ * If no default implementation can be specified for an abstract module, this
+ * meta function should have no return type.
+ */
+template<typename Module> struct module_default_implementation {
+	typedef Module type;
+private:
+	// Ensure that Module publicly inherits from slirc::module_base
+	char (*force_evaluation())[sizeof static_cast<module_base*>((Module*)0)];
 };
+
+
 
 class module_base {
-protected:
-	connection &con;
+	friend class detail::context_implementation;
 
-	SLIRCAPI module_base(connection &con);
+protected:
+	SLIRCAPI module_base(const slirc::context &con);
+	module_base(const module_base &) = delete;
+	module_base &operator=(const module_base &) = delete;
 
 public:
+	slirc::context context();
 	virtual SLIRCAPI ~module_base();
+
+protected:
+	virtual void SLIRCAPI on_load();
+	virtual bool SLIRCAPI on_unload(bool forced) /* TODO: noexcept */;
+
+private:
+	weak_context con;
 };
 
-template<typename T> struct module : public module_base {
-	typedef T lookup_module;
 
-	SLIRCAPI module_base(connection &con)
+
+template<typename ModuleAPIType> struct module : module_base {
+	typedef ModuleAPIType lookup_module;
+
+	module(const slirc::context &con)
 	: module_base(con) {
 	}
 
-	SLIRCAPI ~module_base() {
+	~module() {
 	}
 };
 

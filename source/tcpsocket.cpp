@@ -1,5 +1,5 @@
 /***************************************************************************
-**  Copyright 2010 by Simon "SlashLife" Stienen                           **
+**  Copyright 2010-2011 by Simon "SlashLife" Stienen                           **
 **  http://projects.slashlife.org/libslirc/                               **
 **  libslirc@projects.slashlife.org                                       **
 **                                                                        **
@@ -54,7 +54,7 @@ namespace slirc {
 namespace detail {
 
 struct tcpsocket_implementation {
-	typedef std::vector<socket::endpoint> address_list;
+	typedef socket::endpoint_list address_list;
 	typedef boost::weak_ptr<unsigned> request_id_type;
 	typedef boost::shared_ptr<unsigned> request_id_original_type;
 
@@ -69,8 +69,8 @@ struct tcpsocket_implementation {
 		unsigned refcount;
 
 		struct service_thread {
-			mutable boost::asio::io_service &io_service;
-			mutable boost::mutex &run_control;
+			boost::asio::io_service &io_service;
+			boost::mutex &run_control;
 
 			service_thread(boost::asio::io_service &io_service, boost::mutex &run_control)
 			: io_service(io_service)
@@ -165,7 +165,7 @@ struct tcpsocket_implementation {
 		return request_id_original_type(new unsigned(++last_id));
 	}
 
-	mutable tcpsocket &selfsock;
+	tcpsocket &selfsock;
 	address_list addresses;
 	boost::asio::ip::tcp::socket sock;
 
@@ -524,10 +524,10 @@ tcpsocket_implementation::service_keeper_type tcpsocket_implementation::service_
 
 SLIRCAPI slirc::tcpsocket::tcpsocket(const endpoint &remote)
 : socket()
-, impl(new detail::tcpsocket_implementation(*this, std::vector<endpoint>(1, remote))) {
+, impl(new detail::tcpsocket_implementation(*this, endpoint_list(1, remote))) {
 }
 
-SLIRCAPI slirc::tcpsocket::tcpsocket(const std::vector<endpoint> &remotes)
+SLIRCAPI slirc::tcpsocket::tcpsocket(const endpoint_list &remotes)
 : socket()
 , impl(new detail::tcpsocket_implementation(*this, remotes)) {
 }

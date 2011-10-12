@@ -1,5 +1,5 @@
 /***************************************************************************
-**  Copyright 2010 by Simon "SlashLife" Stienen                           **
+**  Copyright 2010-2011 by Simon "SlashLife" Stienen                           **
 **  http://projects.slashlife.org/libslirc/                               **
 **  libslirc@projects.slashlife.org                                       **
 **                                                                        **
@@ -26,6 +26,8 @@
 #include "config.hpp"
 
 #include <string>
+#include <vector>
+
 #include <boost/function.hpp>
 #include <boost/utility.hpp>
 
@@ -48,6 +50,7 @@ struct socket : boost::noncopyable {
 		hostname_type host;
 		port_type port;
 	};
+	typedef std::vector<endpoint> endpoint_list;
 
 	typedef unsigned status_type;
 	enum status : status_type {

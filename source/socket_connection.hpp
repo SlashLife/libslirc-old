@@ -20,32 +20,38 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_CONNECTION_HPP
-#define SLIRC_CONNECTION_HPP
+#ifndef SLIRC_SOCKET_CONNECTION_HPP
+#define SLIRC_SOCKET_CONNECTION_HPP
 
 #include "config.hpp"
 
-#include "module.hpp"
+#include "connection.hpp"
+#include "socket.hpp"
 
 namespace slirc {
 
 /**
- * abstract base class for connection modules
+ * Connection module for socket based connections.
  */
-class connection : public module<connection> {
-protected:
-	SLIRCAPI connection(const slirc::context &context);
-
-	virtual void connect() = 0;
-
+class socket_connection : public connection {
 public:
-	struct connected_event {};
-	struct disconnected_event {};
+	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint &);
+	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint_list &);
+	SLIRCAPI socket_connection(const slirc::context &context, socket *);
+	SLIRCAPI ~socket_connection();
+
+	SLIRCAPI void connect();
+
+private:
+	socket *connection_socket;
+};
+
+// Set this implementation to be the default implementation for
+// the connection module.
+template<> struct module_default_implementation<connection> {
+	typedef socket_connection type;
 };
 
 }
 
-// declare default implementation
-#include "socket_connection.hpp"
-
-#endif // SLIRC_CONNECTION_HPP
+#endif // SLIRC_SOCKET_CONNECTION_HPP

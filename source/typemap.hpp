@@ -1,5 +1,5 @@
 /***************************************************************************
-**  Copyright 2010 by Simon "SlashLife" Stienen                           **
+**  Copyright 2010-2011 by Simon "SlashLife" Stienen                           **
 **  http://projects.slashlife.org/libslirc/                               **
 **  libslirc@projects.slashlife.org                                       **
 **                                                                        **
@@ -112,7 +112,7 @@ template<typename CommonBase> struct typemapper_pointer_common_base {
 	 *  return_type<T> will contain the default set of type definitions for that type.
 	 *  Otherwise instantiation will fail.
 	 *
-	 *  \note The special case of CommonBase = void allows for all types to be added to the container.
+	 *  \note The special case of CommonBase = void allows for all pointer types to be added to the container.
 	 */
 
 	template<typename T> struct lookup_type;
@@ -149,6 +149,7 @@ template<typename CommonBase> struct typemapper_pointer_common_base {
  *  to themselves.
  */
 typedef typemapper_common_base<void> typemapper_accept_all;
+
 
 
 /*! \brief A container class with type name lookup

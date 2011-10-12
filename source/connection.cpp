@@ -20,32 +20,7 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_CONNECTION_HPP
-#define SLIRC_CONNECTION_HPP
+#include "connection.hpp"
 
-#include "config.hpp"
-
-#include "module.hpp"
-
-namespace slirc {
-
-/**
- * abstract base class for connection modules
- */
-class connection : public module<connection> {
-protected:
-	SLIRCAPI connection(const slirc::context &context);
-
-	virtual void connect() = 0;
-
-public:
-	struct connected_event {};
-	struct disconnected_event {};
-};
-
-}
-
-// declare default implementation
-#include "socket_connection.hpp"
-
-#endif // SLIRC_CONNECTION_HPP
+slirc::connection::connection(const slirc::context &context)
+: slirc::module<connection>(context) {}

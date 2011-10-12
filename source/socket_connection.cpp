@@ -20,32 +20,32 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_CONNECTION_HPP
-#define SLIRC_CONNECTION_HPP
-
-#include "config.hpp"
-
-#include "module.hpp"
-
-namespace slirc {
-
-/**
- * abstract base class for connection modules
- */
-class connection : public module<connection> {
-protected:
-	SLIRCAPI connection(const slirc::context &context);
-
-	virtual void connect() = 0;
-
-public:
-	struct connected_event {};
-	struct disconnected_event {};
-};
-
-}
-
-// declare default implementation
 #include "socket_connection.hpp"
 
-#endif // SLIRC_CONNECTION_HPP
+#include <stdexcept>
+
+#include "tcpsocket.hpp"
+
+slirc::socket_connection::socket_connection(const slirc::context &context, const socket::endpoint &endpoint)
+: slirc::connection(context)
+, connection_socket(new tcpsocket(endpoint)) {}
+
+slirc::socket_connection::socket_connection(const slirc::context &context, const socket::endpoint_list &endpoints)
+: slirc::connection(context)
+, connection_socket(new tcpsocket(endpoints)) {}
+
+slirc::socket_connection::socket_connection(const slirc::context &context, socket *sock)
+: slirc::connection(context)
+, connection_socket(sock) {
+	if (!connection_socket) {
+		throw new std::runtime_error("slirc::socket_connection::socket_connection(slirc::context, slirc::socket*): socket parameter must not be null");
+	}
+}
+
+slirc::socket_connection::~socket_connection() {
+	delete connection_socket;
+}
+
+void slirc::socket_connection::connect() {
+	;
+}

@@ -58,6 +58,7 @@
 		<Unit filename="source\config\compat_nullptr.hpp" />
 		<Unit filename="source\config\compat_to_string.hpp" />
 		<Unit filename="source\config\system.hpp" />
+		<Unit filename="source\connection.cpp" />
 		<Unit filename="source\connection.hpp" />
 		<Unit filename="source\detail\module_typemapper.hpp" />
 		<Unit filename="source\detail\typeinfodb.cpp" />
@@ -65,10 +66,13 @@
 		<Unit filename="source\events.hpp" />
 		<Unit filename="source\main.cpp" />
 		<Unit filename="source\main.hpp" />
+		<Unit filename="source\module.cpp" />
 		<Unit filename="source\module.hpp" />
 		<Unit filename="source\portmap.hpp" />
 		<Unit filename="source\socket.cpp" />
 		<Unit filename="source\socket.hpp" />
+		<Unit filename="source\socket_connection.cpp" />
+		<Unit filename="source\socket_connection.hpp" />
 		<Unit filename="source\tcpsocket.cpp" />
 		<Unit filename="source\tcpsocket.hpp" />
 		<Unit filename="source\typemap.hpp" />

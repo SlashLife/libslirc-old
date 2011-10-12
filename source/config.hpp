@@ -1,5 +1,5 @@
 /***************************************************************************
-**  Copyright 2010 by Simon "SlashLife" Stienen                           **
+**  Copyright 2010-2011 by Simon "SlashLife" Stienen                           **
 **  http://projects.slashlife.org/libslirc/                               **
 **  libslirc@projects.slashlife.org                                       **
 **                                                                        **
@@ -24,6 +24,8 @@
 #define SLIRC_CONFIG_HPP
 
 #include "config/system.hpp"
+
+#define SLIRC_CC_CAPAB_NATIVE_NULLPTR
 
 #if !defined(SLIRC_CC_CAPAB_NATIVE_NULLPTR)
 #	include "config/compat_nullptr.hpp"

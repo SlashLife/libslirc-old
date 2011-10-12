@@ -20,32 +20,63 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_CONNECTION_HPP
-#define SLIRC_CONNECTION_HPP
+#include "context_implementation.hpp"
 
-#include "config.hpp"
+#include "../module.hpp"
 
-#include "module.hpp"
-
-namespace slirc {
-
-/**
- * abstract base class for connection modules
- */
-class connection : public module<connection> {
-protected:
-	SLIRCAPI connection(const slirc::context &context);
-
-	virtual void connect() = 0;
-
-public:
-	struct connected_event {};
-	struct disconnected_event {};
-};
-
+slirc::detail::context_implementation::context_implementation() {
 }
 
-// declare default implementation
-#include "socket_connection.hpp"
+slirc::detail::context_implementation::~context_implementation() {
+	while (!modules.empty()) {
+		do_unload_module(modules.begin()->first, true);
+	}
+}
 
-#endif // SLIRC_CONNECTION_HPP
+bool slirc::detail::context_implementation::load_module(module_key_type which, module_value_type module) {
+	module_value_type &storage = modules[which];
+
+	if (storage) {
+		// place is already occupied.
+		return false;
+	}
+	else {
+		storage = std::move(module);
+		storage->on_load();
+
+		return true;
+	}
+}
+
+slirc::detail::context_implementation::module_value_type slirc::detail::context_implementation::get_module(module_key_type which) {
+	module_map::iterator it = modules.find(which);
+	return (it != modules.end())
+		? it->second
+		: nullptr;
+}
+
+const slirc::detail::context_implementation::module_value_type slirc::detail::context_implementation::get_module(module_key_type which) const {
+	module_map::const_iterator it = modules.find(which);
+	return (it != modules.end())
+		? it->second
+		: nullptr;
+}
+
+bool slirc::detail::context_implementation::do_unload_module(module_key_type which, bool force) {
+	module_map::iterator it = modules.find(which);
+	if (it == modules.end()) {
+		// not loaded anyway
+		return true;
+	}
+
+	if (it->second->on_unload(force) || force) {
+		delete it->second;
+
+		modules.erase(it);
+
+		return true;
+	}
+	else {
+		return false;
+	}
+}

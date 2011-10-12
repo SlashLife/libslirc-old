@@ -20,18 +20,11 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#include "module.hpp"
+#include "eventqueue.hpp"
 
-slirc::module_base::module_base(const slirc::context &con)
-: con(con) {}
+SLIRCAPI slirc::eventqueue::eventqueue(const slirc::context &context)
+: module<eventqueue>(context) {}
 
-slirc::module_base::~module_base() {
+bool SLIRCAPI slirc::eventqueue::next_propagation(event::pointer event) {
+	return event->next_propagation();
 }
-
-slirc::context slirc::module_base::context() {
-	return con.lock();
-}
-
-void slirc::module_base::on_load() {}
-
-bool slirc::module_base::on_unload(bool) /* TODO: noexcept */ { return true; }

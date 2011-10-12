@@ -1,5 +1,5 @@
 /***************************************************************************
-**  Copyright 2010-2011 by Simon "SlashLife" Stienen                           **
+**  Copyright 2010-2011 by Simon "SlashLife" Stienen                      **
 **  http://projects.slashlife.org/libslirc/                               **
 **  libslirc@projects.slashlife.org                                       **
 **                                                                        **
@@ -20,56 +20,46 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_EVENTS_HPP
-#define SLIRC_EVENTS_HPP
+#include "event.hpp"
 
-#include "config.hpp"
-
-#include <utility>
-#include <typeinfo>
-
-#include "detail/typeinfodb.hpp"
-
-namespace slirc {
-
-typedef const std::type_info *event_id_type;
-
-
-
-/*! \brief Creates an event ID object.
- *
- *  \param[in] module_type_info a reference to a type_info object of the event type
- *
- *  Creates an event ID object from an event type object.
- *
- *  \return Returns an event_id_type identifying the event passed.
- *
- *  \example examples/events_hpp__slirc_event_macro.cpp
- */
-inline event_id_type event_id(const std::type_info & module_type_info) {
-	return event_id(
-		detail::normalize_type_info_pointer(&module_type_info)
-	);
+slirc::context SLIRCAPI slirc::event::context() {
+	return con.lock();
 }
 
+void SLIRCAPI slirc::event::propagate(id_type id) {
+	std::deque<id_type>::iterator
+		b = pending_ids.begin(),
+		e = pending_ids.end();
 
+	while (b != e) {
+		if (id == *b) {
+			// type will be propagated - no need to queue
+			return;
+		}
+	}
 
-/*! \brief Creates an event ID object.
- *
- *  \tparam[in] EventType The name of the event type.
- *
- *  Creates an event ID object from an event type name.
- *
- *  \return Returns an event_id_type identifying the event passed.
- *
- *  \example examples/events_hpp__slirc_event_macro.cpp
- */
-template<
-	typename EventType
-> inline event_id_type event_id() {
-	return event_id(typeid(EventType));
+	pending_ids.insert(e, id);
 }
 
+slirc::event::pointer SLIRCAPI slirc::event::create(id_type id) {
+	return pointer(new event(id));
 }
 
-#endif // SLIRC_EVENTS_HPP
+SLIRCAPI slirc::event::event(id_type id)
+: current_id(id)
+, id(current_id) {}
+
+bool SLIRCAPI slirc::event::next_propagation() {
+	if (pending_ids.empty()) {
+		return false;
+	}
+
+	current_id = pending_ids.front();
+	pending_ids.pop_front();
+
+	return true;
+}
+
+void SLIRCAPI slirc::event::context(slirc::context &new_context) {
+	con = new_context;
+}

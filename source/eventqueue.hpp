@@ -20,18 +20,40 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
+#ifndef SLIRC_EVENTQUEUE_HPP
+#define SLIRC_EVENTQUEUE_HPP
+
+#include "config.hpp"
+
+#include <boost/function.hpp>
+
+#include "event.hpp"
 #include "module.hpp"
 
-slirc::module_base::module_base(const slirc::context &con)
-: con(con) {}
+namespace slirc {
 
-slirc::module_base::~module_base() {
+/**
+ * abstract base class for eventqueue modules
+ */
+class eventqueue : public module<eventqueue> {
+public:
+	typedef boost::function<void()> notify_callback_type;
+
+	SLIRCAPI eventqueue(const slirc::context &context);
+
+	virtual notify_callback_type notify_callback() = 0;
+	virtual void notify_callback(const notify_callback_type &) = 0;
+
+	virtual void queue(event::pointer) = 0;
+	virtual event::pointer fetch() = 0;
+
+protected:
+	static bool SLIRCAPI next_propagation(event::pointer);
+};
+
 }
 
-slirc::context slirc::module_base::context() {
-	return con.lock();
-}
+// declare default implementation
+#include "standard_eventqueue.hpp"
 
-void slirc::module_base::on_load() {}
-
-bool slirc::module_base::on_unload(bool) /* TODO: noexcept */ { return true; }
+#endif // SLIRC_EVENTQUEUE_HPP

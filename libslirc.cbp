@@ -44,26 +44,51 @@
 			<Add library="boost_thread-mt" />
 			<Add library="ws2_32" />
 		</Linker>
-		<Unit filename="examples\events_hpp__slirc_event_macro.cpp">
+		<Unit filename="examples\event_hpp__slirc_event_macro.cpp">
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="examples\typemap_hpp__slirc_typemap.cpp">
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="include\slirc\config.hpp" />
+		<Unit filename="include\slirc\config\compat_nullptr.hpp" />
+		<Unit filename="include\slirc\config\compat_to_string.hpp" />
+		<Unit filename="include\slirc\config\system.hpp" />
+		<Unit filename="include\slirc\connection.hpp" />
+		<Unit filename="include\slirc\context.hpp" />
+		<Unit filename="include\slirc\detail\castable_any.hpp" />
+		<Unit filename="include\slirc\detail\context_implementation.hpp" />
+		<Unit filename="include\slirc\detail\module_typemapper.hpp" />
+		<Unit filename="include\slirc\detail\typeinfodb.hpp" />
+		<Unit filename="include\slirc\event.hpp" />
+		<Unit filename="include\slirc\main.hpp" />
+		<Unit filename="include\slirc\module.hpp" />
+		<Unit filename="include\slirc\portmap.hpp" />
+		<Unit filename="include\slirc\socket.hpp" />
+		<Unit filename="include\slirc\socket_connection.hpp" />
+		<Unit filename="include\slirc\tcpsocket.hpp" />
+		<Unit filename="include\slirc\typemap.hpp" />
+		<Unit filename="include\slirc\types.hpp" />
+		<Unit filename="include\slirc\usermask.hpp" />
 		<Unit filename="source\config.hpp" />
 		<Unit filename="source\config\compat_nullptr.hpp" />
 		<Unit filename="source\config\compat_to_string.hpp" />
 		<Unit filename="source\config\system.hpp" />
 		<Unit filename="source\connection.cpp" />
 		<Unit filename="source\connection.hpp" />
+		<Unit filename="source\context.cpp" />
+		<Unit filename="source\context.hpp" />
+		<Unit filename="source\detail\castable_any.hpp" />
+		<Unit filename="source\detail\context_implementation.cpp" />
+		<Unit filename="source\detail\context_implementation.hpp" />
 		<Unit filename="source\detail\module_typemapper.hpp" />
 		<Unit filename="source\detail\typeinfodb.cpp" />
 		<Unit filename="source\detail\typeinfodb.hpp" />
-		<Unit filename="source\events.hpp" />
+		<Unit filename="source\event.cpp" />
+		<Unit filename="source\event.hpp" />
+		<Unit filename="source\eventqueue.hpp" />
 		<Unit filename="source\main.cpp" />
 		<Unit filename="source\main.hpp" />
 		<Unit filename="source\module.cpp" />
@@ -78,6 +103,7 @@
 		<Unit filename="source\typemap.hpp" />
 		<Unit filename="source\types.hpp" />
 		<Unit filename="source\usermask.hpp" />
+		<Unit filename="source\weak_context.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

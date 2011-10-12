@@ -20,18 +20,40 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#include "module.hpp"
+#ifndef SLIRC_STANDARD_EVENTQUEUE_HPP
+#define SLIRC_STANDARD_EVENTQUEUE_HPP
 
-slirc::module_base::module_base(const slirc::context &con)
-: con(con) {}
+#include "config.hpp"
 
-slirc::module_base::~module_base() {
+#include <queue>
+#include <boost/thread.hpp>
+
+#include "eventqueue.hpp"
+
+namespace slirc {
+
+class standard_eventqueue : public eventqueue {
+public:
+	SLIRCAPI standard_eventqueue(const slirc::context &context);
+
+	notify_callback_type SLIRCAPI notify_callback() /* TODO: "override" */;
+	void SLIRCAPI notify_callback(const notify_callback_type &) /* TODO: "override" */;
+
+	void SLIRCAPI queue(event::pointer) /* TODO: "override" */;
+	event::pointer SLIRCAPI fetch() /* TODO: "override" */;
+
+protected:
+	typedef boost::mutex queue_mutex_type;
+	typedef queue_mutex_type::scoped_lock queue_mutex_lock_type;
+
+	notify_callback_type notify_callback_;
+	std::queue<event::pointer> queue_;
+	queue_mutex_type queue_mutex_;
+};
+
 }
 
-slirc::context slirc::module_base::context() {
-	return con.lock();
-}
+// declare default implementation
+#include "standard_eventqueue.hpp"
 
-void slirc::module_base::on_load() {}
-
-bool slirc::module_base::on_unload(bool) /* TODO: noexcept */ { return true; }
+#endif // SLIRC_STANDARD_EVENTQUEUE_HPP

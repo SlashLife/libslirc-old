@@ -20,18 +20,46 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#include "module.hpp"
+#include "standard_eventqueue.hpp"
 
-slirc::module_base::module_base(const slirc::context &con)
-: con(con) {}
-
-slirc::module_base::~module_base() {
+namespace {
+	void noop() {}
 }
 
-slirc::context slirc::module_base::context() {
-	return con.lock();
+SLIRCAPI slirc::standard_eventqueue::standard_eventqueue(const slirc::context &context)
+: eventqueue(context)
+, notify_callback_(&noop) {
+
 }
 
-void slirc::module_base::on_load() {}
+slirc::eventqueue::notify_callback_type SLIRCAPI slirc::standard_eventqueue::notify_callback() {
+	queue_mutex_lock_type lock(queue_mutex_);
 
-bool slirc::module_base::on_unload(bool) /* TODO: noexcept */ { return true; }
+	return notify_callback_;
+}
+
+void SLIRCAPI slirc::standard_eventqueue::notify_callback(const notify_callback_type &new_callback) {
+	queue_mutex_lock_type lock(queue_mutex_);
+
+	notify_callback_ = new_callback;
+}
+
+void SLIRCAPI slirc::standard_eventqueue::queue(event::pointer event) {
+	queue_mutex_lock_type lock(queue_mutex_);
+
+	queue_.push(event);
+	notify_callback_();
+}
+
+slirc::event::pointer SLIRCAPI slirc::standard_eventqueue::fetch() {
+	event::pointer retval;
+
+	{ queue_mutex_lock_type lock(queue_mutex_);
+		if (!queue_.empty()) {
+			retval = queue_.front();
+			queue_.pop();
+		}
+	}
+
+	return retval;
+}

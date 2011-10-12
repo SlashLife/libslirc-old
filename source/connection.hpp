@@ -1,5 +1,5 @@
 /***************************************************************************
-**  Copyright 2010-2011 by Simon "SlashLife" Stienen                           **
+**  Copyright 2010-2011 by Simon "SlashLife" Stienen                      **
 **  http://projects.slashlife.org/libslirc/                               **
 **  libslirc@projects.slashlife.org                                       **
 **                                                                        **
@@ -36,9 +36,9 @@ class connection : public module<connection> {
 protected:
 	SLIRCAPI connection(const slirc::context &context);
 
+public:
 	virtual void connect() = 0;
 
-public:
 	struct connected_event {};
 	struct disconnected_event {};
 };

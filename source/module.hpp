@@ -26,6 +26,7 @@
 #include "config.hpp"
 
 #include "context.hpp"
+#include "detail/requires_implementation.hpp"
 
 namespace slirc {
 
@@ -78,6 +79,14 @@ template<typename ModuleAPIType> struct module : module_base {
 
 	~module() {
 	}
+};
+
+
+
+template<class... RequiredModules> class requires : detail::requires_implementation<RequiredModules>... {
+protected:
+	requires(context con)
+	: detail::requires_implementation<RequiredModules>(con)... {}
 };
 
 }

@@ -33,6 +33,7 @@ namespace slirc {
 
 class module_base;
 class weak_context;
+template<typename T> struct module_default_implementation;
 
 /**
  * The main class to hold an IRC connections and all connected modules.
@@ -54,7 +55,8 @@ public:
 			detail::context_implementation::module_key<Module>();
 
 		if (impl->unload_module(key)) {
-			detail::context_implementation::module_value_type module(new Module(*this, std::forward<Args>(params)...));
+			typedef typename module_default_implementation<Module>::type module_implementation_type;
+			detail::context_implementation::module_value_type module(new module_implementation_type(*this, std::forward<Args>(params)...));
 			try {
 				impl->load_module(key, module);
 			}

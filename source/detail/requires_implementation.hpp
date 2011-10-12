@@ -20,11 +20,23 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#include "eventqueue.hpp"
+#ifndef SLIRC_DETAIL_REQUIRES_IMPLEMENTATION_HPP
+#define SLIRC_DETAIL_REQUIRES_IMPLEMENTATION_HPP
 
-SLIRCAPI slirc::eventqueue::eventqueue(const slirc::context &context)
-: module<eventqueue>(context) {}
+#include "../config.hpp"
 
-bool SLIRCAPI slirc::eventqueue::next_propagation(event::pointer event) {
-	return event->next_propagation();
+#include "../context.hpp"
+
+namespace slirc {
+namespace detail {
+
+template<class Module> struct requires_implementation {
+	requires_implementation(context con) {
+		module_base &module = con.module<Module>();
+	}
+};
+
 }
+}
+
+#endif // SLIRC_DETAIL_REQUIRES_IMPLEMENTATION_HPP

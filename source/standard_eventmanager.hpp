@@ -20,40 +20,53 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_STANDARD_EVENTQUEUE_HPP
-#define SLIRC_STANDARD_EVENTQUEUE_HPP
+#ifndef SLIRC_STANDARD_EVENTMANAGER_HPP
+#define SLIRC_STANDARD_EVENTMANAGER_HPP
 
 #include "config.hpp"
 
 #include <queue>
+#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/thread.hpp>
 
-#include "eventqueue.hpp"
+#include "eventmanager.hpp"
 
 namespace slirc {
 
-class standard_eventqueue : public eventqueue {
+class standard_eventmanager : public eventmanager {
 public:
-	SLIRCAPI standard_eventqueue(const slirc::context &context);
+	SLIRCAPI standard_eventmanager(const slirc::context &context);
 
-	notify_callback_type SLIRCAPI notify_callback() /* TODO: "override" */;
-	void SLIRCAPI notify_callback(const notify_callback_type &) /* TODO: "override" */;
+	notification_callback_type SLIRCAPI notification_callback() const /* TODO: "override" */;
+	void SLIRCAPI notification_callback(const notification_callback_type &) /* TODO: "override" */;
 
 	void SLIRCAPI queue(event::pointer) /* TODO: "override" */;
 	event::pointer SLIRCAPI fetch() /* TODO: "override" */;
 
+	signal::connection connect(event::id_type, event_handler_type, signal::connect_position = signal::at_back) /* TODO: "override" */;
+	signal::connection connect(event::id_type, signal_type::group_type, event_handler_type, signal::connect_position = signal::at_back) /* TODO: "override" */;
+
+	void handle(event::pointer) /* TODO: "override" */;
+
+
 protected:
 	typedef boost::mutex queue_mutex_type;
 	typedef queue_mutex_type::scoped_lock queue_mutex_lock_type;
+	typedef boost::ptr_map<event::id_type, signal_type> signal_map_type;
 
-	notify_callback_type notify_callback_;
+	notification_callback_type notification_callback_;
 	std::queue<event::pointer> queue_;
-	queue_mutex_type queue_mutex_;
+	queue_mutex_type handler_mutex_;
+	mutable queue_mutex_type queue_mutex_;
+	signal_map_type signals_;
+};
+
+// Set this implementation to be the default implementation for
+// the eventmanager module.
+template<> struct module_default_implementation<eventmanager> {
+	typedef standard_eventmanager type;
 };
 
 }
 
-// declare default implementation
-#include "standard_eventqueue.hpp"
-
-#endif // SLIRC_STANDARD_EVENTQUEUE_HPP
+#endif // SLIRC_STANDARD_EVENTMANAGER_HPP

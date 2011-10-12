@@ -20,46 +20,17 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#include "standard_eventqueue.hpp"
+#ifndef SLIRC_SIGNAL_HPP
+#define SLIRC_SIGNAL_HPP
 
-namespace {
-	void noop() {}
+#include "config.hpp"
+
+#include <boost/signals2.hpp>
+
+namespace slirc {
+
+namespace signal = boost::signals2;
+
 }
 
-SLIRCAPI slirc::standard_eventqueue::standard_eventqueue(const slirc::context &context)
-: eventqueue(context)
-, notify_callback_(&noop) {
-
-}
-
-slirc::eventqueue::notify_callback_type SLIRCAPI slirc::standard_eventqueue::notify_callback() {
-	queue_mutex_lock_type lock(queue_mutex_);
-
-	return notify_callback_;
-}
-
-void SLIRCAPI slirc::standard_eventqueue::notify_callback(const notify_callback_type &new_callback) {
-	queue_mutex_lock_type lock(queue_mutex_);
-
-	notify_callback_ = new_callback;
-}
-
-void SLIRCAPI slirc::standard_eventqueue::queue(event::pointer event) {
-	queue_mutex_lock_type lock(queue_mutex_);
-
-	queue_.push(event);
-	notify_callback_();
-}
-
-slirc::event::pointer SLIRCAPI slirc::standard_eventqueue::fetch() {
-	event::pointer retval;
-
-	{ queue_mutex_lock_type lock(queue_mutex_);
-		if (!queue_.empty()) {
-			retval = queue_.front();
-			queue_.pop();
-		}
-	}
-
-	return retval;
-}
+#endif // SLIRC_SIGNAL_HPP

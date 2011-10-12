@@ -37,7 +37,7 @@
 namespace slirc {
 
 struct event {
-	friend class eventqueue;
+	friend class eventmanager;
 
 	typedef const std::type_info *id_type;
 	typedef std::shared_ptr<event> pointer;

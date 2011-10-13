@@ -22,11 +22,15 @@
 
 #include "event.hpp"
 
-slirc::context SLIRCAPI slirc::event::context() {
+slirc::event::event(id_type id)
+: current_id(id)
+, id(current_id) {}
+
+slirc::context slirc::event::context() {
 	return con.lock();
 }
 
-void SLIRCAPI slirc::event::propagate(id_type id) {
+void slirc::event::propagate(id_type id) {
 	std::deque<id_type>::iterator
 		b = pending_ids.begin(),
 		e = pending_ids.end();
@@ -41,15 +45,15 @@ void SLIRCAPI slirc::event::propagate(id_type id) {
 	pending_ids.insert(e, id);
 }
 
-slirc::event::pointer SLIRCAPI slirc::event::create(id_type id) {
+slirc::event::pointer slirc::event::create(id_type id) {
 	return pointer(new event(id));
 }
 
-SLIRCAPI slirc::event::event(id_type id)
-: current_id(id)
-, id(current_id) {}
+bool slirc::event::is(id_type rhs) const {
+	return id == rhs;
+}
 
-bool SLIRCAPI slirc::event::next_propagation() {
+bool slirc::event::next_propagation() {
 	if (pending_ids.empty()) {
 		return false;
 	}
@@ -60,6 +64,6 @@ bool SLIRCAPI slirc::event::next_propagation() {
 	return true;
 }
 
-void SLIRCAPI slirc::event::context(slirc::context &new_context) {
+void slirc::event::context(slirc::context new_context) {
 	con = new_context;
 }

@@ -20,28 +20,41 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#include "socket.hpp"
-#include "portmap.hpp"
+#ifndef SLIRC_TIME_HPP
+#define SLIRC_TIME_HPP
 
-slirc::socket::socket() {}
-slirc::socket::~socket() {}
+#include "config.hpp"
 
-slirc::socket::hostname_type slirc::socket::external_hostname() const {
-	return portmap::get_external_hostname(this);
+#include <boost/date_time/posix_time/posix_time_duration.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+
+namespace slirc {
+namespace time {
+
+typedef boost::posix_time::time_duration duration;
+typedef boost::posix_time::ptime time;
+
+using boost::posix_time::hours;
+using boost::posix_time::minutes;
+using boost::posix_time::seconds;
+using boost::posix_time::milliseconds;
+#if defined(BOOST_DATE_TIME_HAS_NANOSECONDS)
+using boost::posix_time::nanoseconds;
+#else
+typedef boost::date_time::subsecond_duration<duration,1000000000> nanoseconds;
+#endif
+
+using boost::posix_time::special_values;
+using boost::posix_time::not_special;
+using boost::posix_time::neg_infin;
+using boost::posix_time::pos_infin;
+using boost::posix_time::not_a_date_time;
+using boost::posix_time::max_date_time;
+using boost::posix_time::min_date_time;
+
+inline time now() { return boost::posix_time::microsec_clock::universal_time(); }
+
+}
 }
 
-slirc::socket::hostname_type slirc::socket::external_ip() const {
-	return portmap::get_external_ip(this);
-}
-
-slirc::socket::port_type slirc::socket::external_port() const {
-	return portmap::get_external_port(this);
-}
-
-slirc::socket::hostname_type slirc::socket::internal_hostname() const {
-	return internal_ip();
-}
-
-slirc::socket::hostname_type slirc::socket::remote_hostname() const {
-	return remote_ip();
-}
+#endif // SLIRC_TIME_HPP

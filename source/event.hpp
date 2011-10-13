@@ -50,12 +50,15 @@ struct event {
 	template<typename T> static pointer create();
 	static pointer SLIRCAPI create(id_type);
 
+	template<typename EventType> bool is() const;
+	bool SLIRCAPI is(id_type) const;
+
 private:
 	event() = delete;
 	SLIRCAPI event(id_type);
 
 	bool SLIRCAPI next_propagation();
-	void SLIRCAPI context(slirc::context &);
+	void SLIRCAPI context(slirc::context);
 
 	id_type current_id;
 	std::deque<id_type> pending_ids;
@@ -110,6 +113,10 @@ template<typename T> void event::propagate() {
 
 template<typename T> event::pointer event::create() {
 	return create(event_id<T>());
+}
+
+template<typename EventType> bool event::is() const {
+	return is(event_id<EventType>());
 }
 
 }

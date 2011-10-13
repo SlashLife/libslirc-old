@@ -40,7 +40,7 @@ namespace {
 	type_info_database_type type_info_database;
 }
 
-const std::type_info * SLIRCAPI slirc::detail::normalize_type_info_pointer(const std::type_info *pointer) {
+const std::type_info * slirc::detail::normalize_type_info_pointer(const std::type_info *pointer) {
 	if (!pointer) {
 		return 0;
 	}

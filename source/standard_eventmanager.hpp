@@ -48,7 +48,6 @@ public:
 
 	void handle(event::pointer) /* TODO: "override" */;
 
-
 protected:
 	typedef boost::mutex queue_mutex_type;
 	typedef queue_mutex_type::scoped_lock queue_mutex_lock_type;

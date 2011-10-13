@@ -24,6 +24,8 @@
 
 #include "../module.hpp"
 
+#include "typeinfodb.hpp"
+
 slirc::detail::context_implementation::context_implementation() {
 }
 
@@ -34,6 +36,8 @@ slirc::detail::context_implementation::~context_implementation() {
 }
 
 bool slirc::detail::context_implementation::load_module(module_key_type which, module_value_type module) {
+	which = normalize_type_info_pointer(which);
+
 	module_value_type &storage = modules[which];
 
 	if (storage) {
@@ -49,6 +53,8 @@ bool slirc::detail::context_implementation::load_module(module_key_type which, m
 }
 
 slirc::detail::context_implementation::module_value_type slirc::detail::context_implementation::get_module(module_key_type which) {
+	which = normalize_type_info_pointer(which);
+
 	module_map::iterator it = modules.find(which);
 	return (it != modules.end())
 		? it->second
@@ -56,6 +62,8 @@ slirc::detail::context_implementation::module_value_type slirc::detail::context_
 }
 
 const slirc::detail::context_implementation::module_value_type slirc::detail::context_implementation::get_module(module_key_type which) const {
+	which = normalize_type_info_pointer(which);
+
 	module_map::const_iterator it = modules.find(which);
 	return (it != modules.end())
 		? it->second
@@ -63,6 +71,8 @@ const slirc::detail::context_implementation::module_value_type slirc::detail::co
 }
 
 bool slirc::detail::context_implementation::do_unload_module(module_key_type which, bool force) {
+	which = normalize_type_info_pointer(which);
+
 	module_map::iterator it = modules.find(which);
 	if (it == modules.end()) {
 		// not loaded anyway

@@ -57,7 +57,7 @@ protected:
 	module_base &operator=(const module_base &) = delete;
 
 public:
-	slirc::context context();
+	slirc::context context() const;
 	virtual SLIRCAPI ~module_base();
 
 protected:

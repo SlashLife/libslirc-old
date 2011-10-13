@@ -32,3 +32,11 @@ slirc::weak_context::weak_context(const context &other)
 slirc::context slirc::weak_context::lock() const {
 	return context(*this);
 }
+
+bool slirc::weak_context::operator<(const context &other) const {
+	return std::owner_less<std::weak_ptr<detail::context_implementation>>()(impl, std::weak_ptr<detail::context_implementation>(other.impl));
+}
+
+bool slirc::weak_context::operator<(const weak_context &other) const {
+	return std::owner_less<std::weak_ptr<detail::context_implementation>>()(impl, other.impl);
+}

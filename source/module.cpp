@@ -28,7 +28,7 @@ slirc::module_base::module_base(const slirc::context &con)
 slirc::module_base::~module_base() {
 }
 
-slirc::context slirc::module_base::context() {
+slirc::context slirc::module_base::context() const {
 	return con.lock();
 }
 

@@ -22,9 +22,15 @@
 
 #include "eventmanager.hpp"
 
-SLIRCAPI slirc::eventmanager::eventmanager(const slirc::context &context)
+slirc::eventmanager::eventmanager(const slirc::context &context)
 : module<eventmanager>(context) {}
 
-bool SLIRCAPI slirc::eventmanager::next_propagation(event::pointer event) {
+bool slirc::eventmanager::next_propagation(event::pointer event) {
 	return event->next_propagation();
+}
+
+void slirc::eventmanager::pass_context(event::pointer event) const {
+	if (event) {
+		event->context(context());
+	}
 }

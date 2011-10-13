@@ -15,7 +15,6 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -28,7 +27,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-Wall" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -36,6 +34,8 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++0x" />
+			<Add option="-Wall" />
 			<Add option="-DBUILD_DLL" />
 			<Add option="-DSLIRC_EXPORTS" />
 		</Compiler>
@@ -82,6 +82,8 @@
 		<Unit filename="source\connection.hpp" />
 		<Unit filename="source\context.cpp" />
 		<Unit filename="source\context.hpp" />
+		<Unit filename="source\contextgroup.cpp" />
+		<Unit filename="source\contextgroup.hpp" />
 		<Unit filename="source\detail\castable_any.hpp" />
 		<Unit filename="source\detail\context_implementation.cpp" />
 		<Unit filename="source\detail\context_implementation.hpp" />
@@ -107,6 +109,7 @@
 		<Unit filename="source\standard_eventmanager.hpp" />
 		<Unit filename="source\tcpsocket.cpp" />
 		<Unit filename="source\tcpsocket.hpp" />
+		<Unit filename="source\time.hpp" />
 		<Unit filename="source\typemap.hpp" />
 		<Unit filename="source\types.hpp" />
 		<Unit filename="source\usermask.hpp" />

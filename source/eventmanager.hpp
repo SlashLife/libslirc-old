@@ -73,6 +73,7 @@ public:
 
 protected:
 	static bool SLIRCAPI next_propagation(event::pointer);
+	void SLIRCAPI pass_context(event::pointer) const;
 };
 
 }

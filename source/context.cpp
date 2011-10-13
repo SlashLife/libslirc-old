@@ -30,4 +30,16 @@ slirc::context::context()
 : impl(std::make_shared<detail::context_implementation>()) {}
 
 slirc::context::context(const weak_context &other)
-: impl(other.impl) {};
+: impl(other.impl) {
+	if (!impl) {
+		throw std::range_error("Invalid weak context");
+	}
+}
+
+bool slirc::context::operator<(const context &other) const {
+	return impl < other.impl;
+}
+
+bool slirc::context::operator<(const weak_context &other) const {
+	return std::owner_less<std::weak_ptr<detail::context_implementation>>()(std::weak_ptr<detail::context_implementation>(impl), other.impl);
+}

@@ -26,32 +26,32 @@ namespace {
 	void noop() {}
 }
 
-SLIRCAPI slirc::standard_eventmanager::standard_eventmanager(const slirc::context &context)
+slirc::standard_eventmanager::standard_eventmanager(const slirc::context &context)
 : eventmanager(context)
 , notification_callback_(&noop) {
 
 }
 
-slirc::eventmanager::notification_callback_type SLIRCAPI slirc::standard_eventmanager::notification_callback() const {
+slirc::eventmanager::notification_callback_type slirc::standard_eventmanager::notification_callback() const {
 	queue_mutex_lock_type lock(queue_mutex_);
 
 	return notification_callback_;
 }
 
-void SLIRCAPI slirc::standard_eventmanager::notification_callback(const notification_callback_type &new_callback) {
+void slirc::standard_eventmanager::notification_callback(const notification_callback_type &new_callback) {
 	queue_mutex_lock_type lock(queue_mutex_);
 
 	notification_callback_ = new_callback;
 }
 
-void SLIRCAPI slirc::standard_eventmanager::queue(event::pointer event) {
+void slirc::standard_eventmanager::queue(event::pointer event) {
 	queue_mutex_lock_type lock(queue_mutex_);
 
 	queue_.push(event);
 	notification_callback_();
 }
 
-slirc::event::pointer SLIRCAPI slirc::standard_eventmanager::fetch() {
+slirc::event::pointer slirc::standard_eventmanager::fetch() {
 	event::pointer retval;
 
 	{ queue_mutex_lock_type lock(queue_mutex_);
@@ -59,6 +59,8 @@ slirc::event::pointer SLIRCAPI slirc::standard_eventmanager::fetch() {
 			retval = queue_.front();
 			queue_.pop();
 		}
+
+		pass_context(retval);
 	}
 
 	return retval;

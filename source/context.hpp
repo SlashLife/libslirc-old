@@ -27,6 +27,7 @@
 
 #include "detail/context_implementation.hpp"
 
+#include <functional>
 #include <memory>
 
 namespace slirc {
@@ -56,12 +57,12 @@ public:
 
 		if (impl->unload_module(key)) {
 			typedef typename module_default_implementation<Module>::type module_implementation_type;
-			detail::context_implementation::module_value_type module(new module_implementation_type(*this, std::forward<Args>(params)...));
+			detail::context_implementation::module_value_type module_instance(new module_implementation_type(*this, std::forward<Args>(params)...));
 			try {
-				impl->load_module(key, module);
+				impl->load_module(key, module_instance);
 			}
 			catch(...) {
-				delete module;
+				delete module_instance;
 				throw;
 			}
 			return true;
@@ -75,21 +76,30 @@ public:
 		const detail::context_implementation::module_key_type key =
 			detail::context_implementation::module_key<Module>();
 
-		detail::context_implementation::module_value_type module =
-			impl->get_module(key);
+		Module *module_instance = dynamic_cast<Module *>(impl->get_module(key));
 
-		return dynamic_cast<Module &>(*module);
+		if (!module_instance) {
+			throw std::range_error("No such module.");
+		}
+
+		return *module_instance;
 	}
 
 	template<typename Module> const Module &module() const {
 		const detail::context_implementation::module_key_type key =
 			detail::context_implementation::module_key<Module>();
 
-		const detail::context_implementation::module_value_type module =
-			impl->get_module(key);
+		const Module *module_instance = dynamic_cast<const Module *>(impl->get_module(key));
 
-		return dynamic_cast<const Module &>(*module);
+		if (!module_instance) {
+			throw std::range_error("No such module.");
+		}
+
+		return *module_instance;
 	}
+
+	bool SLIRCAPI operator<(const context &) const;
+	bool SLIRCAPI operator<(const weak_context &) const;
 };
 
 class weak_context {
@@ -102,6 +112,9 @@ public:
 	SLIRCAPI weak_context(const context &);
 
 	SLIRCAPI context lock() const;
+
+	bool SLIRCAPI operator<(const context &) const;
+	bool SLIRCAPI operator<(const weak_context &) const;
 };
 
 }

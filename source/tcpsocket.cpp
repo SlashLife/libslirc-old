@@ -22,6 +22,7 @@
 
 #include "tcpsocket.hpp"
 
+#include <memory>
 #include <queue>
 #include <string>
 
@@ -29,14 +30,13 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/optional.hpp>
-#include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
 
 
 
 #undef SERVICE_KEEPER_API_DECLARATION
 #define SERVICE_KEEPER_API_DECLARATION(function_name, params...) \
-	void function_name(boost::shared_ptr<service_keeper_api>, request_id_type request_id, params)
+	void function_name(std::shared_ptr<service_keeper_api>, request_id_type request_id, params)
 
 #undef SERVICE_KEEPER_API_DEFINITION
 #define SERVICE_KEEPER_API_DEFINITION(function_name, params...) \
@@ -55,8 +55,8 @@ namespace detail {
 
 struct tcpsocket_implementation {
 	typedef socket::endpoint_list address_list;
-	typedef boost::weak_ptr<unsigned> request_id_type;
-	typedef boost::shared_ptr<unsigned> request_id_original_type;
+	typedef std::weak_ptr<unsigned> request_id_type;
+	typedef std::shared_ptr<unsigned> request_id_original_type;
 
 
 	// service_keeper_type >>>
@@ -155,7 +155,7 @@ struct tcpsocket_implementation {
 			SERVICE_KEEPER_API_DEFINITION(on_data_sent, error_code, bytes_transferred)
 		}
 	};
-	boost::shared_ptr<service_keeper_api> api;
+	std::shared_ptr<service_keeper_api> api;
 	// <<< service_keeper_api
 
 
@@ -522,53 +522,53 @@ tcpsocket_implementation::service_keeper_type tcpsocket_implementation::service_
 } // namespace detail
 } // namespace slirc
 
-SLIRCAPI slirc::tcpsocket::tcpsocket(const endpoint &remote)
+slirc::tcpsocket::tcpsocket(const endpoint &remote)
 : socket()
 , impl(new detail::tcpsocket_implementation(*this, endpoint_list(1, remote))) {
 }
 
-SLIRCAPI slirc::tcpsocket::tcpsocket(const endpoint_list &remotes)
+slirc::tcpsocket::tcpsocket(const endpoint_list &remotes)
 : socket()
 , impl(new detail::tcpsocket_implementation(*this, remotes)) {
 }
 
-SLIRCAPI slirc::tcpsocket::~tcpsocket() {
+slirc::tcpsocket::~tcpsocket() {
 	delete impl;
 }
 
-slirc::socket::hostname_type SLIRCAPI slirc::tcpsocket::internal_ip() const {
+slirc::socket::hostname_type slirc::tcpsocket::internal_ip() const {
 	return impl->local_ip();
 }
 
-slirc::socket::port_type SLIRCAPI slirc::tcpsocket::internal_port() const {
+slirc::socket::port_type slirc::tcpsocket::internal_port() const {
 	return impl->local_port();
 }
 
-slirc::socket::hostname_type SLIRCAPI slirc::tcpsocket::remote_ip() const {
+slirc::socket::hostname_type slirc::tcpsocket::remote_ip() const {
 	return impl->remote_ip();
 }
 
-slirc::socket::port_type SLIRCAPI slirc::tcpsocket::remote_port() const {
+slirc::socket::port_type slirc::tcpsocket::remote_port() const {
 	return impl->remote_port();
 }
 
-void SLIRCAPI slirc::tcpsocket::open(data_callback dcb, status_callback scb) {
+void slirc::tcpsocket::open(data_callback dcb, status_callback scb) {
 	impl->open(dcb, scb);
 }
 
-void SLIRCAPI slirc::tcpsocket::close() {
+void slirc::tcpsocket::close() {
 	impl->close();
 }
 
-void SLIRCAPI slirc::tcpsocket::send(const data_type &data) {
+void slirc::tcpsocket::send(const data_type &data) {
 	impl->send(data);
 }
 
-slirc::socket * SLIRCAPI slirc::tcpsocket::create_listener() const {
+slirc::socket * slirc::tcpsocket::create_listener() const {
 	// TODO: implement
 	return nullptr;
 }
 
-slirc::socket * SLIRCAPI slirc::tcpsocket::create_connector(const endpoint &remote) const {
+slirc::socket * slirc::tcpsocket::create_connector(const endpoint &remote) const {
 	return new tcpsocket(remote);
 }

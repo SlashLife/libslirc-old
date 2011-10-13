@@ -20,28 +20,43 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#include "socket.hpp"
-#include "portmap.hpp"
+#ifndef SLIRC_CONTEXTGROUP_HPP
+#define SLIRC_CONTEXTGROUP_HPP
 
-slirc::socket::socket() {}
-slirc::socket::~socket() {}
+#include "config.hpp"
 
-slirc::socket::hostname_type slirc::socket::external_hostname() const {
-	return portmap::get_external_hostname(this);
+#include <set>
+
+#include <boost/function.hpp>
+
+#include "context.hpp"
+#include "event.hpp"
+#include "time.hpp"
+
+namespace slirc {
+
+struct contextgroup {
+private:
+	typedef std::set<context> context_list_type;
+
+public:
+	typedef boost::function<bool(event::pointer)> async_handler_type;
+	typedef context_list_type::iterator iterator;
+
+	void SLIRCAPI insert(context);
+	void SLIRCAPI erase(context);
+	bool SLIRCAPI contains(context) const;
+	bool SLIRCAPI empty() const;
+
+	inline iterator begin() { return contexts.begin(); }
+	inline iterator end  () { return contexts.end  (); }
+
+	event::pointer SLIRCAPI fetch(time::duration timeout = time::pos_infin);
+
+private:
+	context_list_type contexts;
+};
+
 }
 
-slirc::socket::hostname_type slirc::socket::external_ip() const {
-	return portmap::get_external_ip(this);
-}
-
-slirc::socket::port_type slirc::socket::external_port() const {
-	return portmap::get_external_port(this);
-}
-
-slirc::socket::hostname_type slirc::socket::internal_hostname() const {
-	return internal_ip();
-}
-
-slirc::socket::hostname_type slirc::socket::remote_hostname() const {
-	return remote_ip();
-}
+#endif // SLIRC_CONTEXTGROUP_HPP

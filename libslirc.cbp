@@ -49,6 +49,10 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="examples\string_hpp__stringconverter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="examples\typemap_hpp__slirc_typemap.cpp">
 			<Option compile="0" />
 			<Option link="0" />
@@ -88,6 +92,8 @@
 		<Unit filename="source\detail\castable_any.hpp" />
 		<Unit filename="source\detail\context_implementation.cpp" />
 		<Unit filename="source\detail\context_implementation.hpp" />
+		<Unit filename="source\detail\irc.cpp" />
+		<Unit filename="source\detail\irc.hpp" />
 		<Unit filename="source\detail\module_typemapper.hpp" />
 		<Unit filename="source\detail\requires_implementation.hpp" />
 		<Unit filename="source\detail\string_converter_implementation.cpp" />
@@ -100,6 +106,7 @@
 		<Unit filename="source\eventmanager.hpp" />
 		<Unit filename="source\exception.cpp" />
 		<Unit filename="source\exception.hpp" />
+		<Unit filename="source\irc.hpp" />
 		<Unit filename="source\main.cpp" />
 		<Unit filename="source\main.hpp" />
 		<Unit filename="source\module.cpp" />
@@ -118,7 +125,6 @@
 		<Unit filename="source\tcpsocket.hpp" />
 		<Unit filename="source\time.hpp" />
 		<Unit filename="source\typemap.hpp" />
-		<Unit filename="source\types.hpp" />
 		<Unit filename="source\usermask.hpp" />
 		<Unit filename="source\weak_context.cpp" />
 		<Extensions>

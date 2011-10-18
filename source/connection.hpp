@@ -25,7 +25,11 @@
 
 #include "config.hpp"
 
+#include <vector>
+
+#include "event.hpp"
 #include "module.hpp"
+#include "string.hpp"
 
 namespace slirc {
 
@@ -38,11 +42,45 @@ protected:
 
 public:
 	virtual void connect() = 0;
+	virtual void disconnect() = 0;
+	virtual void send(const binary &) = 0;
 
-	struct connecting {};
-	struct connected {};
-	struct disconnected {};
-	struct data {};
+	/***************************************************************************
+	** events
+	*/
+
+	/**
+	 * Sent when beginning a connection attempt.
+	 */
+	struct connecting : event_type {};
+
+	/**
+	 * Sent after successfully connecting.
+	 */
+	struct connected : event_type {};
+
+	/**
+	 * Sent after the connection has been broken or the connection attempt aborted.
+	 */
+	struct disconnected : event_type {};
+
+	/**
+	 * Sent for each line read from IRC.
+	 */
+	struct data : event_type {};
+
+
+
+	/***************************************************************************
+	** Tags
+	*/
+
+	struct rawdata {
+		typedef std::vector<binary> argument_list;
+
+		binary raw;
+		argument_list args;
+	};
 };
 
 }

@@ -268,16 +268,6 @@ struct tcpsocket_implementation {
 	}
 
 private:
-	void closedown() {
-		callback.version = make_request_id(); // don't bother old callbacks with data anymore
-
-		if (!sock.is_open()) {
-			return;
-		}
-
-		sock.close();
-	}
-
 	void status_callback(request_id_type request_id, socket::status_type st, socket::status_detail_type sdt=0) const {
 		if (!request_id.lock()) return; // outdated request_id
 		callback.status(selfsock, st, sdt);
@@ -286,6 +276,18 @@ private:
 	void data_callback(request_id_type request_id, const socket::data_type &data) const {
 		if (!request_id.lock()) return; // outdated request_id
 		callback.data(selfsock, data);
+	}
+
+	void closedown() {
+		callback.version = make_request_id(); // don't bother old callbacks with data anymore
+
+		if (!sock.is_open()) {
+			return;
+		}
+
+		status_callback(callback.version, socket::status::closed, 0);
+
+		sock.close();
 	}
 
 	void try_next_dns(request_id_type request_id, bool initializing = false) {

@@ -20,65 +20,29 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_SOCKET_CONNECTION_HPP
-#define SLIRC_SOCKET_CONNECTION_HPP
+#include "irc.hpp"
 
-#include "config.hpp"
+void slirc::detail::irc::split_arguments(const binary &input, boost::function<void(const binary &)> inserter) {
+	binary::size_type p=0, q=0;
+	const binary whitespace("\0\r\n\t ", 5);
 
-#include <memory>
+	bool first = true;
 
-#include <boost/thread.hpp>
+	while(input.npos != (p = input.find_first_not_of(whitespace, q))) {
+		if (input[p] == ':' && !first) {
+			q = input.npos;
+			p += 1;
+		}
+		else {
+			q = input.find_first_of(whitespace, p);
+		}
 
-#include "connection.hpp"
-#include "socket.hpp"
+		if (q == input.npos) {
+			q = input.size();
+		}
 
-namespace slirc {
+		inserter(binary(input.c_str() + p, q-p));
 
-/**
- * Connection module for socket based connections.
- */
-class socket_connection : public connection {
-public:
-	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint &);
-	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint_list &);
-	SLIRCAPI socket_connection(const slirc::context &context, std::unique_ptr<socket>);
-	SLIRCAPI ~socket_connection();
-
-	void SLIRCAPI connect();
-	void SLIRCAPI disconnect();
-	void SLIRCAPI send(const binary &);
-
-	/***************************************************************************
-	** events
-	*/
-
-	/**
-	 * Sent on every status notification.
-	 */
-	struct status {};
-
-private:
-	void SLIRCAPI data_callback(socket &, const socket::data_type &);
-	void SLIRCAPI status_callback(socket &, const socket::status_type, const socket::status_detail_type);
-
-	std::unique_ptr<socket> connection_socket;
-
-	enum internal_status_type {
-		disconnected,
-		connecting,
-		connected
-	} status_;
-	boost::mutex status_mutex;
-
-	binary recvbuf;
-};
-
-// Set this implementation to be the default implementation for
-// the connection module.
-template<> struct module_default_implementation<connection> {
-	typedef socket_connection type;
-};
-
+		first = false;
+	}
 }
-
-#endif // SLIRC_SOCKET_CONNECTION_HPP

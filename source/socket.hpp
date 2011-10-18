@@ -31,7 +31,7 @@
 #include <boost/function.hpp>
 #include <boost/utility.hpp>
 
-#include "types.hpp"
+#include "string.hpp"
 
 namespace slirc {
 
@@ -43,7 +43,7 @@ namespace slirc {
 struct socket : boost::noncopyable {
 	typedef std::string hostname_type;
 	typedef unsigned port_type;
-	typedef octet_string data_type;
+	typedef binary data_type;
 
 	struct endpoint {
 		endpoint(hostname_type host, port_type port) : host(host), port(port) {}

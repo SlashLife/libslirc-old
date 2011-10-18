@@ -20,14 +20,24 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_TYPES_HPP
-#define SLIRC_TYPES_HPP
+#ifndef SLIRC_IRC_HPP
+#define SLIRC_IRC_HPP
+
+#include "config.hpp"
+
+#include <iterator>
+
+#include "detail/irc.hpp"
+#include "string.hpp"
 
 namespace slirc {
+namespace irc {
 
-typedef std::string  octet_string;
-typedef std::wstring text_string;
-
+template<typename Container> void split_arguments(const binary &input, std::insert_iterator<Container> inserter) {
+	detail::irc::split_arguments(input, detail::irc::split_argument_inserter<Container>(inserter));
 }
 
-#endif // SLIRC_TYPES_HPP
+}
+}
+
+#endif // SLIRC_IRC_HPP

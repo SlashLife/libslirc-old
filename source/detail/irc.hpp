@@ -20,65 +20,35 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_SOCKET_CONNECTION_HPP
-#define SLIRC_SOCKET_CONNECTION_HPP
+#ifndef SLIRC_DETAIL_IRC_HPP
+#define SLIRC_DETAIL_IRC_HPP
 
-#include "config.hpp"
+#include "../config.hpp"
 
-#include <memory>
+#include <boost/function.hpp>
 
-#include <boost/thread.hpp>
-
-#include "connection.hpp"
-#include "socket.hpp"
+#include "../string.hpp"
 
 namespace slirc {
+namespace detail {
+namespace irc {
 
-/**
- * Connection module for socket based connections.
- */
-class socket_connection : public connection {
-public:
-	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint &);
-	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint_list &);
-	SLIRCAPI socket_connection(const slirc::context &context, std::unique_ptr<socket>);
-	SLIRCAPI ~socket_connection();
+template<typename Container> struct split_argument_inserter {
+	split_argument_inserter(std::insert_iterator<Container> inserter)
+	: inserter(inserter) {}
 
-	void SLIRCAPI connect();
-	void SLIRCAPI disconnect();
-	void SLIRCAPI send(const binary &);
-
-	/***************************************************************************
-	** events
-	*/
-
-	/**
-	 * Sent on every status notification.
-	 */
-	struct status {};
+	void operator()(const binary &data) {
+		inserter = data;
+	}
 
 private:
-	void SLIRCAPI data_callback(socket &, const socket::data_type &);
-	void SLIRCAPI status_callback(socket &, const socket::status_type, const socket::status_detail_type);
-
-	std::unique_ptr<socket> connection_socket;
-
-	enum internal_status_type {
-		disconnected,
-		connecting,
-		connected
-	} status_;
-	boost::mutex status_mutex;
-
-	binary recvbuf;
+	std::insert_iterator<Container> inserter;
 };
 
-// Set this implementation to be the default implementation for
-// the connection module.
-template<> struct module_default_implementation<connection> {
-	typedef socket_connection type;
-};
+void SLIRCAPI split_arguments(const binary &input, boost::function<void(const binary &)> inserter);
 
 }
+}
+}
 
-#endif // SLIRC_SOCKET_CONNECTION_HPP
+#endif // SLIRC_DETAIL_IRC_HPP

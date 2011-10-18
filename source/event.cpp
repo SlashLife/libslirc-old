@@ -22,6 +22,8 @@
 
 #include "event.hpp"
 
+#include "eventmanager.hpp"
+
 slirc::event::event(id_type id)
 : current_id(id)
 , id(current_id) {}
@@ -46,7 +48,9 @@ void slirc::event::propagate(id_type id) {
 }
 
 slirc::event::pointer slirc::event::create(id_type id) {
-	return pointer(new event(id));
+	pointer ev(new event(id));
+	ev->self = ev;
+	return ev;
 }
 
 bool slirc::event::is(id_type rhs) const {
@@ -66,4 +70,8 @@ bool slirc::event::next_propagation() {
 
 void slirc::event::context(slirc::context new_context) {
 	con = new_context;
+}
+
+void slirc::event::handle() {
+	context().module<eventmanager>().handle(self.lock());
 }

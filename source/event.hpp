@@ -36,6 +36,11 @@
 
 namespace slirc {
 
+/**
+ * Base class for event types.
+ */
+struct event_type {};
+
 struct event {
 	friend class eventmanager;
 
@@ -53,6 +58,8 @@ struct event {
 	template<typename EventType> bool is() const;
 	bool SLIRCAPI is(id_type) const;
 
+	void SLIRCAPI handle();
+
 private:
 	event() = delete;
 	SLIRCAPI event(id_type);
@@ -63,6 +70,8 @@ private:
 	id_type current_id;
 	std::deque<id_type> pending_ids;
 	weak_context con;
+
+	std::weak_ptr<event> self;
 
 public:
 	const id_type &id;
@@ -102,6 +111,9 @@ inline event::id_type event_id(const std::type_info & module_type_info) {
 template<
 	typename EventType
 > inline event::id_type event_id() {
+	// if compilation fails on the following line, EventType is not derived from slirc::event_type
+	char (*force_evaluation())[sizeof static_cast<event_type*>((EventType*)0)];
+
 	return event_id(typeid(EventType));
 }
 

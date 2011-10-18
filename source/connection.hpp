@@ -39,8 +39,10 @@ protected:
 public:
 	virtual void connect() = 0;
 
-	struct connected_event {};
-	struct disconnected_event {};
+	struct connecting {};
+	struct connected {};
+	struct disconnected {};
+	struct data {};
 };
 
 }

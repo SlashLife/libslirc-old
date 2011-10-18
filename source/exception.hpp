@@ -20,54 +20,28 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
-#define SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
+#ifndef SLIRC_EXCEPTION_HPP
+#define SLIRC_EXCEPTION_HPP
 
-#include "../config.hpp"
+#include "config.hpp"
 
-#include <map>
-#include <memory>
-#include <typeinfo>
+#include <stdexcept>
 
-#include <boost/utility.hpp>
+#include "string.hpp"
 
 namespace slirc {
 
-class module_base;
+struct invalid_conversion : public std::range_error {
+	SLIRCAPI invalid_conversion(const std::string &what);
+};
 
-namespace detail {
+struct conversion_failed : public std::runtime_error {
+	SLIRCAPI conversion_failed(const std::string &what, const stringconverter::error_type, const text::size_type);
 
-class context_implementation {
-public:
-	typedef std::type_info const * module_key_type;
-	typedef module_base *          module_value_type;
-
-	context_implementation();
-	~context_implementation();
-
-	context_implementation(const context_implementation &) = delete;
-	context_implementation &operator=(const context_implementation &) = delete;
-
-	bool SLIRCAPI load_module(module_key_type, module_value_type);
-	inline bool unload_module(module_key_type which) {
-		return do_unload_module(which);
-	}
-	module_value_type SLIRCAPI get_module(module_key_type);
-	const module_value_type SLIRCAPI get_module(module_key_type) const;
-
-	template<typename Module> static inline module_key_type module_key() {
-		typedef typename Module::lookup_module lookup_type;
-		return &typeid(lookup_type);
-	}
-
-private:
-	bool SLIRCAPI do_unload_module(module_key_type, bool force=false);
-
-	typedef std::map<module_key_type, module_value_type> module_map;
-	module_map modules;
+	const stringconverter::error_type error;
+	const text::size_type offset;
 };
 
 }
-}
 
-#endif // SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
+#endif // SLIRC_EXCEPTION_HPP

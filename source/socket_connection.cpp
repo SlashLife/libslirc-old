@@ -24,6 +24,7 @@
 
 #include <stdexcept>
 
+#include "string.hpp"
 #include "tcpsocket.hpp"
 
 slirc::socket_connection::socket_connection(const slirc::context &context, const socket::endpoint &endpoint)
@@ -49,3 +50,10 @@ slirc::socket_connection::~socket_connection() {
 void slirc::socket_connection::connect() {
 	;
 }
+
+void slirc::socket_connection::data_callback(socket &sock, const socket::data_type &data) {
+}
+
+void slirc::socket_connection::status_callback(socket &sock, const socket::status_type status, const socket::status_detail_type) {
+}
+

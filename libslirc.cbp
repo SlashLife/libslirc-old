@@ -43,6 +43,7 @@
 			<Add library="boost_system-mt" />
 			<Add library="boost_thread-mt" />
 			<Add library="ws2_32" />
+			<Add library="iconv" />
 		</Linker>
 		<Unit filename="examples\event_hpp__slirc_event_macro.cpp">
 			<Option compile="0" />
@@ -89,12 +90,16 @@
 		<Unit filename="source\detail\context_implementation.hpp" />
 		<Unit filename="source\detail\module_typemapper.hpp" />
 		<Unit filename="source\detail\requires_implementation.hpp" />
+		<Unit filename="source\detail\string_converter_implementation.cpp" />
+		<Unit filename="source\detail\string_converter_implementation.hpp" />
 		<Unit filename="source\detail\typeinfodb.cpp" />
 		<Unit filename="source\detail\typeinfodb.hpp" />
 		<Unit filename="source\event.cpp" />
 		<Unit filename="source\event.hpp" />
 		<Unit filename="source\eventmanager.cpp" />
 		<Unit filename="source\eventmanager.hpp" />
+		<Unit filename="source\exception.cpp" />
+		<Unit filename="source\exception.hpp" />
 		<Unit filename="source\main.cpp" />
 		<Unit filename="source\main.hpp" />
 		<Unit filename="source\module.cpp" />
@@ -107,6 +112,8 @@
 		<Unit filename="source\socket_connection.hpp" />
 		<Unit filename="source\standard_eventmanager.cpp" />
 		<Unit filename="source\standard_eventmanager.hpp" />
+		<Unit filename="source\string.cpp" />
+		<Unit filename="source\string.hpp" />
 		<Unit filename="source\tcpsocket.cpp" />
 		<Unit filename="source\tcpsocket.hpp" />
 		<Unit filename="source\time.hpp" />

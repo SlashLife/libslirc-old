@@ -20,54 +20,49 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
-#define SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
+#ifndef SLIRC_STRING_HPP
+#define SLIRC_STRING_HPP
 
-#include "../config.hpp"
+#include "config.hpp"
 
-#include <map>
 #include <memory>
-#include <typeinfo>
+#include <string>
 
-#include <boost/utility.hpp>
+#include <boost/cstdint.hpp>
+#include <boost/function.hpp>
 
 namespace slirc {
 
-class module_base;
-
 namespace detail {
+	struct stringconverter_implementation;
+}
 
-class context_implementation {
-public:
-	typedef std::type_info const * module_key_type;
-	typedef module_base *          module_value_type;
+typedef std::string binary;
+typedef std::basic_string<char16_t> text;
 
-	context_implementation();
-	~context_implementation();
+struct stringconverter {
+	typedef std::string conversion_type;
+	enum error_type {
+		no_error,
+		conversion_complete,
+		unknown_error,
+		invalid_sequence,
+		incomplete_sequence
+	};
+	typedef boost::function<void(error_type, text::size_type)> error_handler_type;
+	static void SLIRCAPI ignore_on_error(error_type, text::size_type);
+	static void SLIRCAPI throw_on_error (error_type, text::size_type);
 
-	context_implementation(const context_implementation &) = delete;
-	context_implementation &operator=(const context_implementation &) = delete;
+	SLIRCAPI stringconverter(const conversion_type & = "UTF-8", error_handler_type = &ignore_on_error);
 
-	bool SLIRCAPI load_module(module_key_type, module_value_type);
-	inline bool unload_module(module_key_type which) {
-		return do_unload_module(which);
-	}
-	module_value_type SLIRCAPI get_module(module_key_type);
-	const module_value_type SLIRCAPI get_module(module_key_type) const;
+	binary SLIRCAPI operator()(const text &) const;
+	text SLIRCAPI operator()(const binary &) const;
 
-	template<typename Module> static inline module_key_type module_key() {
-		typedef typename Module::lookup_module lookup_type;
-		return &typeid(lookup_type);
-	}
-
+	static const conversion_type &SLIRCAPI internal_encoding();
 private:
-	bool SLIRCAPI do_unload_module(module_key_type, bool force=false);
-
-	typedef std::map<module_key_type, module_value_type> module_map;
-	module_map modules;
+	std::shared_ptr<detail::stringconverter_implementation> impl;
 };
 
 }
-}
 
-#endif // SLIRC_DETAIL_MODULE_CONTEXT_IMPLEMENTATION_HPP
+#endif // SLIRC_STRING_HPP

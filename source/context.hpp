@@ -29,6 +29,7 @@
 
 #include <functional>
 #include <memory>
+#include <stdexcept>
 
 namespace slirc {
 

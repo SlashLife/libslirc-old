@@ -43,6 +43,9 @@ public:
 	SLIRCAPI void connect();
 
 private:
+	void SLIRCAPI data_callback(socket &, const socket::data_type &);
+	void SLIRCAPI status_callback(socket &, const socket::status_type, const socket::status_detail_type);
+
 	socket *connection_socket;
 };
 

@@ -20,30 +20,27 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_SIGNAL_HPP
-#define SLIRC_SIGNAL_HPP
+#ifndef SLIRC_STANDARD_CLIENT_MODULES_HPP
+#define SLIRC_STANDARD_CLIENT_MODULES_HPP
 
 #include "config.hpp"
 
-#include <memory>
-
-#include <boost/signals2.hpp>
-
-namespace boost {
-namespace signals2 {
-	typedef std::unique_ptr<scoped_connection> scoped_connection_pointer;
-
-	inline scoped_connection_pointer make_scoped_connection(connection con) {
-		scoped_connection_pointer ptr(new scoped_connection(con));
-		return std::move(ptr);
-	}
-}
-}
+#include "module.hpp"
 
 namespace slirc {
 
-namespace signal = boost::signals2;
+/**
+ * Loads all the usual client modules and unloads itself again.
+ */
+class standard_client_modules : public module<standard_client_modules> {
+public:
+	SLIRCAPI standard_client_modules(const slirc::context &context);
+
+protected:
+	void SLIRCAPI on_load();
+};
 
 }
 
-#endif // SLIRC_SIGNAL_HPP
+#endif // SLIRC_STANDARD_CLIENT_MODULES_HPP
+

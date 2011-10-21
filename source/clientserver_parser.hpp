@@ -20,30 +20,39 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_SIGNAL_HPP
-#define SLIRC_SIGNAL_HPP
+#ifndef SLIRC_CLIENTSERVER_PARSER_HPP
+#define SLIRC_CLIENTSERVER_PARSER_HPP
 
 #include "config.hpp"
 
 #include <memory>
 
-#include <boost/signals2.hpp>
-
-namespace boost {
-namespace signals2 {
-	typedef std::unique_ptr<scoped_connection> scoped_connection_pointer;
-
-	inline scoped_connection_pointer make_scoped_connection(connection con) {
-		scoped_connection_pointer ptr(new scoped_connection(con));
-		return std::move(ptr);
-	}
-}
-}
+#include "eventmanager.hpp"
+#include "parser.hpp"
+#include "signal.hpp"
 
 namespace slirc {
 
-namespace signal = boost::signals2;
+class clientserver_parser : public parser, private requires<eventmanager> {
+public:
+	SLIRCAPI clientserver_parser(const slirc::context &context);
+
+protected:
+	void SLIRCAPI on_load();
+
+private:
+	signal::scoped_connection_pointer
+		data_handler_connection;
+
+	void SLIRCAPI data_handler(event::pointer);
+};
+
+// Set this implementation to be the default implementation for
+// the parser module.
+template<> struct module_default_implementation<parser> {
+	typedef clientserver_parser type;
+};
 
 }
 
-#endif // SLIRC_SIGNAL_HPP
+#endif // SLIRC_CLIENTSERVER_PARSER_HPP

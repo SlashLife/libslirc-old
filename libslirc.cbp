@@ -79,6 +79,8 @@
 		<Unit filename="include\slirc\typemap.hpp" />
 		<Unit filename="include\slirc\types.hpp" />
 		<Unit filename="include\slirc\usermask.hpp" />
+		<Unit filename="source\clientserver_parser.cpp" />
+		<Unit filename="source\clientserver_parser.hpp" />
 		<Unit filename="source\config.hpp" />
 		<Unit filename="source\config\compat_nullptr.hpp" />
 		<Unit filename="source\config\compat_to_string.hpp" />
@@ -111,12 +113,16 @@
 		<Unit filename="source\main.hpp" />
 		<Unit filename="source\module.cpp" />
 		<Unit filename="source\module.hpp" />
+		<Unit filename="source\parser.cpp" />
+		<Unit filename="source\parser.hpp" />
 		<Unit filename="source\portmap.hpp" />
 		<Unit filename="source\signal.hpp" />
 		<Unit filename="source\socket.cpp" />
 		<Unit filename="source\socket.hpp" />
 		<Unit filename="source\socket_connection.cpp" />
 		<Unit filename="source\socket_connection.hpp" />
+		<Unit filename="source\standard_client_modules.cpp" />
+		<Unit filename="source\standard_client_modules.hpp" />
 		<Unit filename="source\standard_eventmanager.cpp" />
 		<Unit filename="source\standard_eventmanager.hpp" />
 		<Unit filename="source\string.cpp" />

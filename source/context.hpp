@@ -99,6 +99,13 @@ public:
 		return *module_instance;
 	}
 
+	template<typename Module> bool unload() {
+		const detail::context_implementation::module_key_type key =
+			detail::context_implementation::module_key<Module>();
+
+		return impl->unload_module(key);
+	}
+
 	bool SLIRCAPI operator<(const context &) const;
 	bool SLIRCAPI operator<(const weak_context &) const;
 };

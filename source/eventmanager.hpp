@@ -62,14 +62,14 @@ public:
 	virtual signal::connection connect(event::id_type, event_handler_type, signal::connect_position = signal::at_back) = 0;
 	virtual signal::connection connect(event::id_type, signal_type::group_type, event_handler_type, signal::connect_position = signal::at_back) = 0;
 
-	virtual void handle(event::pointer) = 0;
-
 	template<typename T> signal::connection connect(event_handler_type handler, signal::connect_position position = signal::at_back) {
 		return connect(event_id<T>(), handler, position);
 	}
 	template<typename T> signal::connection connect(event_handler_type handler, signal_type::group_type group, signal::connect_position position = signal::at_back) {
 		return connect(event_id<T>(), group, handler, position);
 	}
+
+	virtual void handle(event::pointer) = 0;
 
 protected:
 	static bool SLIRCAPI next_propagation(event::pointer);

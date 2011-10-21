@@ -20,30 +20,7 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_SIGNAL_HPP
-#define SLIRC_SIGNAL_HPP
+#include "parser.hpp"
 
-#include "config.hpp"
-
-#include <memory>
-
-#include <boost/signals2.hpp>
-
-namespace boost {
-namespace signals2 {
-	typedef std::unique_ptr<scoped_connection> scoped_connection_pointer;
-
-	inline scoped_connection_pointer make_scoped_connection(connection con) {
-		scoped_connection_pointer ptr(new scoped_connection(con));
-		return std::move(ptr);
-	}
-}
-}
-
-namespace slirc {
-
-namespace signal = boost::signals2;
-
-}
-
-#endif // SLIRC_SIGNAL_HPP
+slirc::parser::parser(const slirc::context &context)
+: module<parser>(context) {}

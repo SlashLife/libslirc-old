@@ -20,30 +20,16 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_SIGNAL_HPP
-#define SLIRC_SIGNAL_HPP
+#include "standard_client_modules.hpp"
 
-#include "config.hpp"
+#include "standard_eventmanager.hpp"
 
-#include <memory>
+slirc::standard_client_modules::standard_client_modules(const slirc::context &context)
+: module<standard_client_modules>(context) {}
 
-#include <boost/signals2.hpp>
+void slirc::standard_client_modules::on_load() {
+	try { context().module<eventmanager>(); }
+	catch(...) { context().load<eventmanager>(); }
 
-namespace boost {
-namespace signals2 {
-	typedef std::unique_ptr<scoped_connection> scoped_connection_pointer;
-
-	inline scoped_connection_pointer make_scoped_connection(connection con) {
-		scoped_connection_pointer ptr(new scoped_connection(con));
-		return std::move(ptr);
-	}
+	context().unload<standard_client_modules>();
 }
-}
-
-namespace slirc {
-
-namespace signal = boost::signals2;
-
-}
-
-#endif // SLIRC_SIGNAL_HPP

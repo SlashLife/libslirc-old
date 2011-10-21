@@ -20,30 +20,73 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#ifndef SLIRC_SIGNAL_HPP
-#define SLIRC_SIGNAL_HPP
+#ifndef SLIRC_PARSER_HPP
+#define SLIRC_PARSER_HPP
 
 #include "config.hpp"
 
-#include <memory>
-
-#include <boost/signals2.hpp>
-
-namespace boost {
-namespace signals2 {
-	typedef std::unique_ptr<scoped_connection> scoped_connection_pointer;
-
-	inline scoped_connection_pointer make_scoped_connection(connection con) {
-		scoped_connection_pointer ptr(new scoped_connection(con));
-		return std::move(ptr);
-	}
-}
-}
+#include "event.hpp"
+#include "module.hpp"
+#include "string.hpp"
 
 namespace slirc {
 
-namespace signal = boost::signals2;
+/**
+ * abstract base class for parser modules
+ */
+class parser : public module<parser> {
+protected:
+	SLIRCAPI parser(const slirc::context &context);
+
+public:
+
+	/***************************************************************************
+	** events
+	*/
+
+	struct numeric : event_type {
+		unsigned code;
+	};
+
+	struct message : event_type {
+		enum message_type : unsigned short {
+			other,
+			privmsg,
+			notice,
+			ctcp_request,
+			ctcp_response
+		} type;
+		binary ctcp;
+		binary raw;
+	};
+
+	struct ctcp : event_type {
+		typedef std::vector<message> ctcp_list;
+		ctcp_list ctcps;
+	};
+
+	struct ping : event_type {};
+
+
+
+	/***************************************************************************
+	** tags
+	*/
+
+	struct origin {
+		binary raw;
+		// TODO: add and fill "text" fields
+	};
+
+	struct target {
+		binary raw;
+		// TODO: add and fill user::pointer, channel::pointer, channeluser::pointer
+	};
+};
 
 }
 
-#endif // SLIRC_SIGNAL_HPP
+// declare default implementation
+#include "clientserver_parser.hpp"
+
+#endif // SLIRC_PARSER_HPP

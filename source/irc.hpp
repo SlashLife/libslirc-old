@@ -33,6 +33,16 @@
 namespace slirc {
 namespace irc {
 
+/**
+ * \brief Splits a string into parameters
+ *
+ * This function splits the given string into parameters according to RFC 1459
+ * and inserts them into the given insert iterator.
+ *
+ * \tparam Container The type of the target container.
+ * \param input The string which contains the parameters.
+ * \param inserter A valid insert iterator for the \c Container type.
+ */
 template<typename Container> void split_arguments(const binary &input, std::insert_iterator<Container> inserter) {
 	detail::irc::split_arguments(input, detail::irc::split_argument_inserter<Container>(inserter));
 }

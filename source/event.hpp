@@ -37,27 +37,97 @@
 namespace slirc {
 
 /**
- * Base class for event types.
+ * \brief Base class for event types.
+ *
+ * This type is only used for type checking on event queues.
+ *
+ * Every type that can be used as an event type should inherit from this class.
  */
 struct event_type {};
 
+/**
+ * \brief Represents an event in the queue.
+ */
 struct event {
 	friend class eventmanager;
 
+	/**
+	 * \brief The storage type for event IDs.
+	 *
+	 * \see event_id()
+	 */
 	typedef const std::type_info *id_type;
+
+	/**
+	 * \brief The pointer used to pass around events.
+	 */
 	typedef std::shared_ptr<event> pointer;
 
+	/**
+	 * \brief Returns the context this event belongs to.
+	 */
 	slirc::context SLIRCAPI context();
 
-	template<typename T> void propagate();
-	void SLIRCAPI propagate(id_type);
+	/**
+	 * \brief Propagates this event.
+	 *
+	 * Propagation will happen after all event handlers for the current type
+	 * have been executed.
+	 *
+	 * \tparam EventType The type to propagate this event as.
+	 */
+	template<typename EventType> void propagate();
 
-	template<typename T> static pointer create();
-	static pointer SLIRCAPI create(id_type);
+	/**
+	 * \brief Propagates this event.
+	 *
+	 * Propagation will happen after all event handlers for the current type
+	 * have been executed.
+	 *
+	 * \param eventid The type to propagate this event as.
+	 */
+	void SLIRCAPI propagate(id_type eventid);
 
+	/**
+	 * \brief Creates a new event.
+	 *
+	 * \tparam EventType The type of the event to be created.
+	 */
+	template<typename EventType> static pointer create();
+
+	/**
+	 * \brief Creates a new event.
+	 *
+	 * \param eventid The type of the event to be created.
+	 */
+	static pointer SLIRCAPI create(id_type eventid);
+
+	/**
+	 * \brief Compares the type of the event.
+	 *
+	 * \tparam EventType The event type to compare against.
+	 *
+	 * \return \c true if the given event type matches the events current type.
+	 * \return \c false otherwise.
+	 */
 	template<typename EventType> bool is() const;
-	bool SLIRCAPI is(id_type) const;
 
+	/**
+	 * \brief Compares the type of the event.
+	 *
+	 * \param eventid The event type to compare against.
+	 *
+	 * \return \c true if the given event type matches the events current type.
+	 * \return \c false otherwise.
+	 */
+	bool SLIRCAPI is(id_type eventid) const;
+
+	/**
+	 * \brief Handles this event.
+	 *
+	 * Equivalent to:
+	 * \code context().module<eventmanager>().handle(this) \endcode
+	 */
 	void SLIRCAPI handle();
 
 private:
@@ -74,21 +144,30 @@ private:
 	std::weak_ptr<event> self;
 
 public:
+	/**
+	 * \brief The current type of this event.
+	 */
 	const id_type &id;
+
+	/**
+	 * \brief Additional event data.
+	 *
+	 * Up to one instance of every copyable and assignable type can be inserted
+	 * into this container.
+	 */
 	typemap<> data;
 };
 
 
 
-/*! \brief Creates an event ID object.
+/**
+ * \brief Creates an event ID object.
  *
  *  \param[in] module_type_info a reference to a type_info object of the event type
  *
  *  Creates an event ID object from an event type object.
  *
  *  \return Returns an event_id_type identifying the event passed.
- *
- *  \example examples/events_hpp__slirc_event_macro.cpp
  */
 inline event::id_type event_id(const std::type_info & module_type_info) {
 	return event::id_type(
@@ -98,15 +177,14 @@ inline event::id_type event_id(const std::type_info & module_type_info) {
 
 
 
-/*! \brief Creates an event ID object.
+/**
+ * \brief Creates an event ID object.
  *
  *  \tparam[in] EventType The name of the event type.
  *
  *  Creates an event ID object from an event type name.
  *
  *  \return Returns an event_id_type identifying the event passed.
- *
- *  \example examples/events_hpp__slirc_event_macro.cpp
  */
 template<
 	typename EventType

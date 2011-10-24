@@ -33,8 +33,14 @@
 
 namespace slirc {
 
+/**
+ * \brief A standard event managers
+ */
 class standard_eventmanager : public eventmanager {
 public:
+	/**
+	 * \brief Constructs a standard_eventmanager module for the given context.
+	 */
 	SLIRCAPI standard_eventmanager(const slirc::context &context);
 
 	notification_callback_type SLIRCAPI notification_callback() const /* TODO: "override" */;
@@ -60,8 +66,9 @@ protected:
 	signal_map_type signals_;
 };
 
-// Set this implementation to be the default implementation for
-// the eventmanager module.
+/**
+ * \brief Defines the standard implementation for eventmanager modules
+ */
 template<> struct module_default_implementation<eventmanager> {
 	typedef standard_eventmanager type;
 };

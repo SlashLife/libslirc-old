@@ -39,7 +39,3 @@ slirc::context::context(const weak_context &other)
 bool slirc::context::operator<(const context &other) const {
 	return impl < other.impl;
 }
-
-bool slirc::context::operator<(const weak_context &other) const {
-	return std::owner_less<std::weak_ptr<detail::context_implementation>>()(std::weak_ptr<detail::context_implementation>(impl), other.impl);
-}

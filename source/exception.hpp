@@ -31,14 +31,43 @@
 
 namespace slirc {
 
+/**
+ * \exception invalid_conversion
+ * \brief Describes an invalid character set conversion.
+ *
+ * This exception is thrown by \ref stringconverter if the requested character
+ * set cannot be converted to or from the internal text character set.
+ */
 struct invalid_conversion : public std::range_error {
+	/**
+	 * \brief Constructs an invalid_conversion exception object.
+	 *
+	 * \param what The error message.
+	 */
 	SLIRCAPI invalid_conversion(const std::string &what);
 };
 
+/**
+ * \exception conversion_failed
+ * \brief Describes a character set conversion failure.
+ *
+ * This exception is thrown by the stringconverter::throw_on_error policy on any
+ * error during string conversion.
+ */
 struct conversion_failed : public std::runtime_error {
+	/**
+	 * \brief Creates a conversion_failed exception.
+	 */
 	SLIRCAPI conversion_failed(const std::string &what, const stringconverter::error_type, const text::size_type);
 
+	/**
+	 * \brief The type of error that happened.
+	 */
 	const stringconverter::error_type error;
+
+	/**
+	 * \brief The offset in the input string at which the error occured.
+	 */
 	const text::size_type offset;
 };
 

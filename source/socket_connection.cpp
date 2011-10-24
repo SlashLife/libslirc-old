@@ -96,7 +96,7 @@ void slirc::socket_connection::data_callback(socket &, const socket::data_type &
 	}
 }
 
-void slirc::socket_connection::status_callback(socket &, const socket::status_type sockstatus, const socket::status_detail_type) {
+void slirc::socket_connection::status_callback(socket &, const socket::status_type sockstatus, const socket::status_detail_type detailstat) {
 	eventmanager &em = context().module<eventmanager>();
 
 	internal_status_type current_status;
@@ -105,6 +105,11 @@ void slirc::socket_connection::status_callback(socket &, const socket::status_ty
 	}
 
 	event::pointer ev = event::create<status>();
+	{ status sts;
+		sts.status_code = sockstatus;
+		sts.detail_code = detailstat;
+		ev->data.set(sts);
+	}
 
 	switch(sockstatus & socket::status::group_mask) {
 		case socket::status::group_opening:

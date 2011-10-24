@@ -44,7 +44,7 @@ namespace {
 
 slirc::clientserver_parser::clientserver_parser(const slirc::context &context)
 : parser(context)
-, requires<eventmanager>(context) {}
+, requirements_(context) {}
 
 void slirc::clientserver_parser::on_load() {
 	connect_helper helper(this);
@@ -135,6 +135,130 @@ void slirc::clientserver_parser::data_handler(event::pointer evp) {
 
 				ev.data.set(msg);
 			}
+		}
+
+		else if (raw.args[1] == "NICK" && raw.args.size() >= 3) {
+			ev.propagate<nick>();
+
+			nick nck;
+				nck.newnick = raw.args[2];
+
+			ev.data.set(nck);
+		}
+
+		else if (raw.args[1] == "QUIT" && raw.args.size() >= 2) {
+			ev.propagate<quit>();
+
+			if (raw.args.size() > 2) {
+				message msg;
+					msg.type = message::message_type::other;
+					msg.raw  = raw.args.back();
+				ev.data.set(msg);
+			}
+		}
+
+		else if (raw.args[1] == "SQUIT" && raw.args.size() >= 3) {
+			ev.propagate<squit>();
+
+			target tgt;
+				tgt.raw = raw.args[2];
+			ev.data.set(tgt);
+
+			if (raw.args.size() > 3) {
+				message msg;
+					msg.type = message::message_type::other;
+					msg.raw  = raw.args.back();
+				ev.data.set(msg);
+			}
+		}
+
+		else if (raw.args[1] == "MODE" && raw.args.size() >= 3) {
+			// TODO: implement MODE
+			// :foo MODE target [<modes>]
+		}
+
+		else if (raw.args[1] == "JOIN" && raw.args.size() >= 3) {
+			ev.propagate<join>();
+
+			target tgt;
+				tgt.raw = raw.args[2];
+			ev.data.set(tgt);
+		}
+
+		else if (raw.args[1] == "PART" && raw.args.size() >= 3) {
+			ev.propagate<part>();
+
+			target tgt;
+				tgt.raw = raw.args[2];
+			ev.data.set(tgt);
+
+			if (raw.args.size() > 3) {
+				message msg;
+					msg.type = message::message_type::other;
+					msg.raw  = raw.args.back();
+				ev.data.set(msg);
+			}
+		}
+
+		else if (raw.args[1] == "TOPIC" && raw.args.size() >= 4) {
+			ev.propagate<topic>();
+
+			target tgt;
+				tgt.raw = raw.args[2];
+			ev.data.set(tgt);
+
+			message msg;
+				msg.type = message::message_type::other;
+				msg.raw  = raw.args.back();
+			ev.data.set(msg);
+		}
+
+		else if (raw.args[1] == "INVITE" && raw.args.size() >= 4) {
+			// TODO: implement INVITE
+			// :foo INVITE me #channel
+		}
+
+		else if (raw.args[1] == "KICK" && raw.args.size() >= 4) {
+			ev.propagate<kick>();
+
+			kick kck;
+				kck.nick = raw.args[3];
+				kck.from = raw.args[2];
+			ev.data.set(kck);
+
+			if (raw.args.size() > 4) {
+				message msg;
+					msg.type = message::message_type::other;
+					msg.raw  = raw.args.back();
+				ev.data.set(msg);
+			}
+		}
+
+		else if (raw.args[1] == "ERROR" && raw.args.size() >= 3) {
+			ev.propagate<error>();
+
+			message msg;
+				msg.type = message::message_type::other;
+				msg.raw  = raw.args.back();
+			ev.data.set(msg);
+		}
+
+		else if (raw.args[1] == "WALLOPS" && raw.args.size() >= 3) {
+			ev.propagate<wallops>();
+
+			message msg;
+				msg.type = message::message_type::other;
+				msg.raw  = raw.args.back();
+			ev.data.set(msg);
+		}
+
+		else if (raw.args[1] == "PONG" && raw.args.size() >= 3) {
+			ev.propagate<pong>();
+
+			message msg;
+				msg.type = message::message_type::other;
+				msg.raw  = raw.args.back();
+			ev.data.set(msg);
 		}
 	}
 	else {

@@ -34,51 +34,67 @@
 namespace slirc {
 
 /**
- * abstract base class for connection modules
+ * \brief abstract base for connection modules
  */
 class connection : public module<connection> {
 protected:
+	/**
+	 * \brief Constructs abstract connection module.
+	 */
 	SLIRCAPI connection(const slirc::context &context);
 
 public:
+	/**
+	 * \brief Starts or restarts the connection.
+	 */
 	virtual void connect() = 0;
-	virtual void disconnect() = 0;
-	virtual void send(const binary &) = 0;
-
-	/***************************************************************************
-	** events
-	*/
 
 	/**
-	 * Sent when beginning a connection attempt.
+	 * \brief Terminate an existing connection.
+	 */
+	virtual void disconnect() = 0;
+
+	/**
+	 * \brief Send raw data to the socket.
+	 */
+	virtual void send(const binary &) = 0;
+
+	/**
+	 * \ingroup events
+	 * \brief Sent when beginning a connection attempt.
 	 */
 	struct connecting : event_type {};
 
 	/**
-	 * Sent after successfully connecting.
+	 * \ingroup events
+	 * \brief Sent after successfully connecting.
 	 */
 	struct connected : event_type {};
 
 	/**
-	 * Sent after the connection has been broken or the connection attempt aborted.
+	 * \ingroup events
+	 * \brief Sent after the connection has been broken or the connection attempt aborted.
 	 */
 	struct disconnected : event_type {};
 
 	/**
-	 * Sent for each line read from IRC.
+	 * \ingroup events
+	 * \ingroup tags
+	 * \brief Sent for each line read from IRC.
+	 *
+	 * Always attaches: connection::data
 	 */
-	struct data : event_type {};
-
-
-
-	/***************************************************************************
-	** Tags
-	*/
-
-	struct rawdata {
+	struct data : event_type {
 		typedef std::vector<binary> argument_list;
 
+		/**
+		 * \brief The raw line received, excluding the line ending.
+		 */
 		binary raw;
+
+		/**
+		 * \brief The single parameters split according to RFC 1459
+		 */
 		argument_list args;
 	};
 };

@@ -30,32 +30,82 @@
 #include <boost/thread.hpp>
 
 #include "connection.hpp"
+#include "event.hpp"
 #include "socket.hpp"
 
 namespace slirc {
 
 /**
- * Connection module for socket based connections.
+ * \brief Connection module for socket based connections
  */
 class socket_connection : public connection {
 public:
-	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint &);
-	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint_list &);
-	SLIRCAPI socket_connection(const slirc::context &context, std::unique_ptr<socket>);
+	/**
+	 * \brief Creates a connection to a specific endpoint.
+	 *
+	 * This constructor will create a new tcpsocket with the given endpoint as
+	 * its target.
+	 *
+	 * \param context The context this module will be attached to.
+	 * \param endpoint The endpoint this connection will attempt to connect to.
+	 */
+	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint &endpoint);
+
+	/**
+	 * \brief Creates a connection to a specific endpoint.
+	 *
+	 * This constructor will create a new tcpsocket with the given endpoints as
+	 * its target. On connecting, it will go through the list of endpoints until
+	 * a successful connection is made or all endpoints have been tried in vain.
+	 *
+	 * \param context The context this module will be attached to.
+	 * \param endpoints The endpoint this connection will attempt to connect to.
+	 */
+	SLIRCAPI socket_connection(const slirc::context &context, const socket::endpoint_list &endpoints);
+
+	/**
+	 * \brief Creates a connection using a specific socket.
+	 *
+	 * This constructor will use the given socket to establish a connection.
+	 *
+	 * \warning Do not destruct the socket manually! The socket_connection will
+	 * take control over the lifetime of the given socket and destruct it on
+	 * destruction of the module or in case the constructor call fails.
+	 *
+	 * \param context The context this module will be attached to.
+	 * \param socket The socket which will be used.
+	 */
+	SLIRCAPI socket_connection(const slirc::context &context, std::unique_ptr<socket> socket);
+
 	SLIRCAPI ~socket_connection();
 
 	void SLIRCAPI connect();
 	void SLIRCAPI disconnect();
 	void SLIRCAPI send(const binary &);
 
-	/***************************************************************************
-	** events
-	*/
+	/// @{
+	/// @name Events
 
 	/**
-	 * Sent on every status notification.
+	 * \ingroup events
+	 *
+	 * \brief Sent on status changes.
+	 *
+	 * Always attaches: socket_connection::status
 	 */
-	struct status {};
+	struct status : public event_type {
+		/**
+		 * \brief The socket status code received.
+		 */
+		socket::status_type status_code;
+
+		/**
+		 * \brief The socket status detail code received.
+		 */
+		socket::status_detail_type detail_code;
+	};
+
+	/// @}
 
 private:
 	void SLIRCAPI data_callback(socket &, const socket::data_type &);
@@ -73,8 +123,9 @@ private:
 	binary recvbuf;
 };
 
-// Set this implementation to be the default implementation for
-// the connection module.
+/**
+ * \brief Defines the default implementation for connection modules.
+ */
 template<> struct module_default_implementation<connection> {
 	typedef socket_connection type;
 };

@@ -35,22 +35,28 @@
 
 namespace slirc {
 
-/*! \exception bad_mapping
- *  Thrown by variants of typemap::get which return a reference.
+/** \exception bad_mapping
+ *  \brief Thrown by variants of typemap::get which return a reference.
  */
 struct bad_mapping : std::runtime_error {
+	/**
+	 * \brief Constructs a bad_mapping exception.
+	 */
 	bad_mapping() : std::runtime_error("Bad typemap mapping.") {}
 };
 
 
 
-/*! A typemapper class to restrict the types contained by the typemap to
- *  types derived by a common base class.
+/** \brief A typemapper class to restrict the types contained by the typemap to
+ *         types derived by a common base class.
+ *
+ *  With this typemapper, typemap::contains_a and typemap::is_occupied are
+ *  equivalent.
  *
  *  \tparam CommonBase the type of the common base class
  */
 template<typename CommonBase> struct typemapper_common_base {
-	/*! The type mapping template function for the common base typemapper, determining
+	/** The type mapping template function for the common base typemapper, determining
 	 *
 	 *  \tparam CommonBase The base type of which all inserted types will have
 	 *          to be derived.
@@ -96,13 +102,16 @@ template<typename CommonBase> struct typemapper_common_base {
 
 
 
-/*! A typemapper class to restrict the types contained by the typemap to
- *  pointers which base types are derived by a common base class.
+/** \brief A typemapper class to restrict the types contained by the typemap to
+ *         pointers which base types are derived by a common base class.
+ *
+ *  With this typemapper, typemap::contains_a and typemap::is_occupied are
+ *  equivalent.
  *
  *  \tparam CommonBase the type of the common base class
  */
 template<typename CommonBase> struct typemapper_pointer_common_base {
-	/*! The type mapping template function for the common base typemapper, determining
+	/** The type mapping template function for the common base typemapper, determining
 	 *
 	 *  \tparam CommonBase The base type of which all inserted types will have
 	 *          to be derived.
@@ -145,14 +154,14 @@ template<typename CommonBase> struct typemapper_pointer_common_base {
 
 
 
-/*! A typemapper class that accepts all types and transparently maps them
- *  to themselves.
+/**
+ * \brief A typemapper class accepting all types mapping them to themselves.
  */
 typedef typemapper_common_base<void> typemapper_accept_all;
 
 
 
-/*! \brief A container class with type name lookup
+/** \brief A container class with type name lookup
  *
  *  The typemap container can contain zero or one instances of each type
  *  that is allowed to be put into it. Lookup is done by type name for
@@ -173,8 +182,8 @@ public:
 
 	// getters
 
-	/*!
-	 *  Get a reference to a stored object.
+	/**
+	 *  \brief Get a reference to a stored object.
 	 *
 	 *  \tparam T The type to look up.
 	 *
@@ -197,8 +206,8 @@ public:
 		return typemapper_type::template get<T>(it->second);
 	}
 
-	/*!
-	 *  Get a constant reference to a stored object.
+	/**
+	 *  \brief Get a constant reference to a stored object.
 	 *
 	 *  \tparam T The type to look up.
 	 *
@@ -215,8 +224,8 @@ public:
 		return const_cast<typemap*>(this)->get<T>();
 	}
 
-	/*!
-	 *  Get a pointer to a stored object.
+	/**
+	 *  \brief Get a pointer to a stored object.
 	 *
 	 *  \tparam T The type to look up.
 	 *
@@ -238,8 +247,8 @@ public:
 		}
 	}
 
-	/*!
-	 *  Get a nonmodifiable pointer to a stored object.
+	/**
+	 *  \brief Get a nonmodifiable pointer to a stored object.
 	 *
 	 *  \tparam T The type to look up.
 	 *
@@ -264,8 +273,8 @@ public:
 
 
 	// setter
-	/*!
-	 *  Stores an object in the type map and returns a reference to it.
+	/**
+	 *  \brief Stores an object in the type map and returns a reference to it.
 	 *
 	 *  \tparam T The type to look up.
 	 *
@@ -287,8 +296,8 @@ public:
 
 
 	// unsetter
-	/*!
-	 *  Removes a stored object.
+	/**
+	 *  \brief Removes a stored object.
 	 *
 	 *  \tparam T The type to look up.
 	 *
@@ -309,12 +318,14 @@ public:
 
 
 	// checkers
-	/*!
-	 *  Checks whether or not a key is occupied; that is: If an object is stored
+	/**
+	 *  \brief Checks whether or not a key is occupied.
+	 *
+	 *  That is: If an object is stored
 	 *  using the given key: If it would overwrite an existing object.
-	 *  As opposed to the contains_a<T> method, this method does not check
+	 *  As opposed to the contains_a\<T\> method, this method does not check
 	 *  whether the stored object can actually correctly be cast by a variant of
-	 *  the get(_p)<T> methods.
+	 *  the get(_p)\<T\> methods.
 	 *
 	 *  \tparam T The type to look up.
 	 *
@@ -328,10 +339,10 @@ public:
 		return (it != data.end());
 	}
 
-	/*!
-	 *  Checks whether get<T>ing the value would succeed.
+	/**
+	 *  \brief Checks whether get\<T\>ing a value would succeed.
 	 *
-	 *  Compared to is_occupied<T>, this method does "deep" type checking in the
+	 *  Compared to is_occupied\<T\>, this method does "deep" type checking in the
 	 *  sense that it validates if the contained object really matches the key
 	 *  type so that get()ing it would succeed.
 	 *

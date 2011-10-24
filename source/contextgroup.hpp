@@ -35,6 +35,9 @@
 
 namespace slirc {
 
+/**
+ * \brief Manages a set of contexts to ease multi connection handling.
+ */
 struct contextgroup {
 private:
 	typedef std::set<context> context_list_type;
@@ -43,14 +46,50 @@ public:
 	typedef boost::function<bool(event::pointer)> async_handler_type;
 	typedef context_list_type::iterator iterator;
 
+	/**
+	 * \brief Adds a context to the set.
+	 */
 	void SLIRCAPI insert(context);
+
+	/**
+	 * \brief Removes a context from the set.s
+	 */
 	void SLIRCAPI erase(context);
+
+	/**
+	 * \brief Checks whether a context is in the set.
+	 *
+	 * \return \c true if the context is in the set, \c false otherwise.
+	 */
 	bool SLIRCAPI contains(context) const;
+
+	/**
+	 * \brief Checks whether the context group is empty.
+	 *
+	 * \return \c true if the context group is empty, \c false otherwise.
+	 */
 	bool SLIRCAPI empty() const;
 
+	/**
+	 * \brief Returns an iterator to the begin of the context set.
+	 */
 	inline iterator begin() { return contexts.begin(); }
+
+	/**
+	 * \brief Returns an iterator to the end of the context set.
+	 */
 	inline iterator end  () { return contexts.end  (); }
 
+	/**
+	 * \brief Fetch an event from any of the included contexts.
+	 *
+	 * Waits on the contexts contained on call time for an event to show up.
+	 * May or may not override the \ref slirc::eventmanager::notification_callback() "notification callback" in eventmanager.
+	 *
+	 * \param timeout The time to wait for an event.
+	 *
+	 * \return A pointer to a valid event or an invalid pointer in case of a timeout.
+	 */
 	event::pointer SLIRCAPI fetch(time::duration timeout = time::pos_infin);
 
 private:

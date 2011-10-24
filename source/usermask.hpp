@@ -27,8 +27,12 @@
 
 namespace slirc {
 
+/**
+ * \brief IRC style usermask container with matching capabilities.
+ */
 struct usermask {
-	typedef boost::variant<connection, recipient>
+//	typedef boost::variant<connection, recipient>
+// TODO: implement
 };
 
 }

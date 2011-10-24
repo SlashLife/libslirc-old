@@ -38,20 +38,53 @@ class weak_context;
 template<typename T> struct module_default_implementation;
 
 /**
- * The main class to hold an IRC connections and all connected modules.
+ * \brief Holds an IRC connections and all connected modules.
+ *
+ * An IRC context is destructed when its last handle goes out of scope.
+ *
+ * As opposed to e.g. pointers, a context will *always* be valid. If it is not
+ * assigned another context, it creates a new one.
  */
-
 class context {
 	friend class weak_context;
 
 	std::shared_ptr<detail::context_implementation> impl;
 
 public:
+	/**
+	 * \brief Create a new context handle.
+	 */
 	SLIRCAPI context();
+
+	/**
+	 * \brief Create another handle to an existing context.
+	 */
+	context(const context &) = default;
+
+	/**
+	 * \brief Reassigns the handle to another context.
+	 */
+	context &operator=(const context &) = default;
+
 private:
 	SLIRCAPI explicit context(const weak_context &);
 
 public:
+	/// @{
+	/// @name Module handling
+
+	/**
+	 * \brief Loads a module into the context.
+	 *
+	 * After unloading an existing module occupying Modules role, load()
+	 * tries to construct a new module of the given type by passing the current
+	 * context followed by the given parameters to its constructor.
+	 *
+	 * \tparam Module the type of module to be loaded.
+	 *
+	 * \return \c true if the new module as been loaded successfully
+	 * \return \c false in case the existing modules \ref module_base::on_unload() "on_unload handler" refused to unload.
+	 */
 	template<typename Module, typename... Args> bool load(Args&&... params) {
 		const detail::context_implementation::module_key_type key =
 			detail::context_implementation::module_key<Module>();
@@ -73,6 +106,21 @@ public:
 		}
 	}
 
+	/**
+	 * \brief Gets a loaded module.
+	 *
+	 * Gets the module which occupies the given modules role and tries to cast
+	 * it to the actual type. If the loaded module is actually derived from
+	 * Module, a reference to it is returned, in any other case an exception is
+	 * thrown. This way \b if a reference is returned, its type safety can be
+	 * safely assumed.
+	 *
+	 * \tparam Module the type of module to be returned.
+	 *
+	 * \return a reference to the requested module.
+	 * \throw std::range_error if no module is loaded for the given slot or if
+	 *        the loaded module cannot be converted to the given type.
+	 */
 	template<typename Module> Module &module() {
 		const detail::context_implementation::module_key_type key =
 			detail::context_implementation::module_key<Module>();
@@ -86,6 +134,21 @@ public:
 		return *module_instance;
 	}
 
+	/**
+	 * \brief Gets a loaded module.
+	 *
+	 * Gets the module which occupies the given modules role and tries to cast
+	 * it to the actual type. If the loaded module is actually derived from
+	 * Module, a reference to it is returned, in any other case an exception is
+	 * thrown. This way \b if a reference is returned, its type safety can be
+	 * safely assumed.
+	 *
+	 * \tparam Module the type of module to be returned.
+	 *
+	 * \return a reference to the requested module.
+	 * \throw std::range_error if no module is loaded for the given slot or if
+	 *        the loaded module cannot be converted to the given type.
+	 */
 	template<typename Module> const Module &module() const {
 		const detail::context_implementation::module_key_type key =
 			detail::context_implementation::module_key<Module>();
@@ -99,29 +162,72 @@ public:
 		return *module_instance;
 	}
 
+	/**
+	 * \brief Unloads a module.
+	 *
+	 * Attempts to unload the given module.
+	 *
+	 * \tparam Module the type of module to be unloaded.
+	 *
+	 * \return \c true if the slot for the given module is now free.
+	 * \return \c false if the slot for the given module is still occupied.
+	 *
+	 * \warning This function does a type check on the currently loaded module.
+	 *          It will only unload according to the rules of
+	 *          \ref context::module() "module<Module>()" - if you want to make
+	 *          sure to pass the type check, unload Module::lookup_type instead.
+	 *          The \ref module_base::on_unload() "on_unload handler" can still
+	 *          veto the unload process, though.
+	 */
 	template<typename Module> bool unload() {
 		const detail::context_implementation::module_key_type key =
 			detail::context_implementation::module_key<Module>();
 
-		return impl->unload_module(key);
+		return
+			static_cast<bool>(dynamic_cast<const Module *>(impl->get_module(key))) &&
+			static_cast<bool>(impl->unload_module(key));
 	}
 
+	/// @}
+
+	/**
+	 * \brief Defines a weak order for sorting.
+	 */
 	bool SLIRCAPI operator<(const context &) const;
-	bool SLIRCAPI operator<(const weak_context &) const;
 };
 
+/**
+ * \brief References a context in a safe manner without hindering the referenced
+ *        context from going out of scope.
+ */
 class weak_context {
 	friend class context;
 
 	std::weak_ptr<detail::context_implementation> impl;
 
 public:
+	/**
+	 * \brief Creates an invalid weak context reference.
+	 */
 	SLIRCAPI weak_context();
+
+	/**
+	 * \brief Creates a weak context reference to the given context.
+	 */
 	SLIRCAPI weak_context(const context &);
 
+	/**
+	 * \brief Gets a handle for the referenced context.
+	 *
+	 * \return a copy of the originally referenced context.
+	 * \throw std::range_error if the reference is invalid or the referenced
+	 *        context has gone out of scope.
+	 */
 	SLIRCAPI context lock() const;
 
-	bool SLIRCAPI operator<(const context &) const;
+	/**
+	 * \brief Defines a weak order for sorting.
+	 */
 	bool SLIRCAPI operator<(const weak_context &) const;
 };
 

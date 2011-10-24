@@ -30,7 +30,7 @@
 namespace slirc {
 
 /**
- * Loads all the usual client modules and unloads itself again.
+ * \brief Loads all the usual client modules and unloads itself again.
  */
 class standard_client_modules : public module<standard_client_modules> {
 public:

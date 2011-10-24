@@ -29,6 +29,8 @@
 
 #include <boost/signals2.hpp>
 
+// TODO: document
+
 namespace boost {
 namespace signals2 {
 	typedef std::unique_ptr<scoped_connection> scoped_connection_pointer;

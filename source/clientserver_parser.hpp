@@ -33,8 +33,18 @@
 
 namespace slirc {
 
-class clientserver_parser : public parser, private requires<eventmanager> {
+/**
+ * \brief Parser module for the IRC client-server protocol.
+ */
+class clientserver_parser : public parser {
+	requires<eventmanager> requirements_;
+
 public:
+	/**
+	 * \brief Constructs a client-server protocol parser module.
+	 *
+	 * \param context The context to load this module to.
+	 */
 	SLIRCAPI clientserver_parser(const slirc::context &context);
 
 protected:
@@ -47,8 +57,9 @@ private:
 	void SLIRCAPI data_handler(event::pointer);
 };
 
-// Set this implementation to be the default implementation for
-// the parser module.
+/**
+ * \brief Defines the default implementation for parser modules.
+ */
 template<> struct module_default_implementation<parser> {
 	typedef clientserver_parser type;
 };

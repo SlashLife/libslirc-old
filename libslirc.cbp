@@ -79,6 +79,7 @@
 		<Unit filename="include\slirc\typemap.hpp" />
 		<Unit filename="include\slirc\types.hpp" />
 		<Unit filename="include\slirc\usermask.hpp" />
+		<Unit filename="source\casemapping.hpp" />
 		<Unit filename="source\clientserver_parser.cpp" />
 		<Unit filename="source\clientserver_parser.hpp" />
 		<Unit filename="source\config.hpp" />
@@ -131,6 +132,8 @@
 		<Unit filename="source\tcpsocket.hpp" />
 		<Unit filename="source\time.hpp" />
 		<Unit filename="source\typemap.hpp" />
+		<Unit filename="source\usermanager.hpp" />
+		<Unit filename="source\usermask.cpp" />
 		<Unit filename="source\usermask.hpp" />
 		<Unit filename="source\weak_context.cpp" />
 		<Extensions>

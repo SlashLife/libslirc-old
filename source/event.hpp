@@ -163,7 +163,7 @@ public:
 /**
  * \brief Creates an event ID object.
  *
- *  \param[in] module_type_info a reference to a type_info object of the event type
+ *  \param module_type_info a reference to a type_info object of the event type
  *
  *  Creates an event ID object from an event type object.
  *
@@ -180,7 +180,7 @@ inline event::id_type event_id(const std::type_info & module_type_info) {
 /**
  * \brief Creates an event ID object.
  *
- *  \tparam[in] EventType The name of the event type.
+ *  \tparam EventType The name of the event type.
  *
  *  Creates an event ID object from an event type name.
  *

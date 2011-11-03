@@ -54,7 +54,7 @@ void slirc::clientserver_parser::on_load() {
 void slirc::clientserver_parser::data_handler(event::pointer evp) {
 	event &ev = *evp;
 	typemap<> &data = ev.data;
-	connection::rawdata &raw = data.get<connection::rawdata>();
+	connection::data &raw = data.get<connection::data>();
 
 	if (raw.args.empty()) {
 		return;

@@ -84,7 +84,7 @@ void slirc::socket_connection::data_callback(socket &, const socket::data_type &
 		if (p > 0) {
 			event::pointer ev = event::create<connection::data>();
 
-			connection::rawdata rawdata;
+			connection::data rawdata;
 				rawdata.raw = recvbuf.substr(0, p);
 				irc::split_arguments(rawdata.raw, std::inserter(rawdata.args, rawdata.args.begin()));
 

@@ -26,6 +26,7 @@
 #include "config.hpp"
 
 #include <map>
+#include <string>
 
 #include <boost/function.hpp>
 
@@ -58,7 +59,7 @@ typedef boost::function<character_type(character_type)> function;
  * \param name The algorithm identifier, e.g. "rfc1459".
  * \param mapping The mapping function for this algorithm.
  */
-void set(const key_type &name, function mapping);
+void SLIRCAPI set(const key_type &name, function mapping);
 
 /**
  * \brief Obtains the function for the given casemapping.
@@ -71,7 +72,27 @@ void set(const key_type &name, function mapping);
  *       - \c ascii, \c rfc1459, \c strict-rfc1459 as specified by http://tools.ietf.org/html/draft-brocklesby-irc-isupport-03#section-3.1
  * \note The default mapping for IRC is \c rfc1459
  */
-function get(const key_type &name);
+function SLIRCAPI get(const key_type &name);
+
+/**
+ * \brief Lowercases a complete string with a given casemapping.
+ *
+ * \param subject The string to be lowercased.
+ * \param tolower The casemapping function to be applied.
+ *
+ * \return A string of the same type as the input string with all elements
+ *         converted to their lowercase versions.
+ */
+template<typename Value_, typename Trait_, typename Alloc_>
+std::basic_string<Value_, Trait_, Alloc_> to_lower(std::basic_string<Value_, Trait_, Alloc_> subject, function tolower) {
+	typedef std::basic_string<Value_, Trait_, Alloc_> string;
+
+	for(typename string::iterator b = subject.begin(), e = subject.end(); b != e; ++b) {
+		*b = tolower(*b);
+	}
+
+	return subject;
+}
 
 }
 }

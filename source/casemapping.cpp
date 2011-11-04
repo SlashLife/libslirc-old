@@ -43,7 +43,7 @@ void slirc::casemapping::set(const key_type &name, function callback) {
 slirc::casemapping::function slirc::casemapping::get(const key_type &name) {
 	casemapping_map::iterator it = casemapping_database.find(name);
 
-	if (it != casemapping_database.end()) {
+	if (it == casemapping_database.end()) {
 		throw std::range_error("Unknown casemapping: " + name);
 	}
 	else {

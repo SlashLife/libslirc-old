@@ -152,7 +152,7 @@ bool slirc::usermask::wildcard_match(const binary &mask, const binary &subject) 
 
 					// *mb is now a searchable token.
 					while (sb != se) {
-						if (*sb == *se&& (*this)(mb, me, mb, se)) {
+						if (*sb == *se && (*this)(mb, me, mb, se)) {
 							DEBUG_MATCHING(cout << "Returning " << unsigned(true) << " from line " << (__LINE__+1) << endl;)
 							return true;
 						}

@@ -123,7 +123,6 @@ struct usermask {
 	 */
 	bool SLIRCAPI test(const usermask &subject, casemapping::function) const;
 
-protected:
 	/**
 	 * \brief Matches a string against a wildcard mask.
 	 */

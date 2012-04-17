@@ -190,7 +190,7 @@ public:
 	 *  \return Returns a reference of the return type given by the typemapping
 	 *          to the looked up object or throws if no such object is stored.
 	 *
-	 *  \throw Throws an exception of type std::out_of_range if there is no
+	 *  \throw Throws an exception of type std::range_error if there is no
 	 *         object stored for the mapped lookup type according to the type
 	 *         mapper used or passes any exception by the typemappers get
 	 *         function (usually bad_mapping if the mapped lookup type is
@@ -201,7 +201,7 @@ public:
 
 		typename type_map_data_type::iterator it = data.find(key);
 		if (data.end() == it) {
-			throw std::out_of_range("typemap lookup out of range: No such type in type map.");
+			throw std::range_error("typemap lookup out of range: No such type in type map.");
 		}
 		return typemapper_type::template get<T>(it->second);
 	}
@@ -214,7 +214,7 @@ public:
 	 *  \return Returns a reference of the return type given by the typemapping
 	 *          to the looked up object or throws if no such object is stored.
 	 *
-	 *  \throw Throws an exception of type std::out_of_range if there is no
+	 *  \throw Throws an exception of type std::range_error if there is no
 	 *         object stored for the mapped lookup type according to the type
 	 *         mapper used or passes any exception by the typemappers get
 	 *         function (usually bad_mapping if the mapped lookup type is
@@ -242,7 +242,7 @@ public:
 		catch(bad_mapping&) {
 			return nullptr;
 		}
-		catch(std::out_of_range&) {
+		catch(std::range_error&) {
 			return nullptr;
 		}
 	}
@@ -265,7 +265,7 @@ public:
 		catch(bad_mapping&) {
 			return nullptr;
 		}
-		catch(std::out_of_range&) {
+		catch(std::range_error&) {
 			return nullptr;
 		}
 	}
@@ -281,7 +281,7 @@ public:
 	 *  \return Returns a reference of the return type given by the typemapping
 	 *          to the looked up object or throws if no such object is stored.
 	 *
-	 *  \throw Throws an exception of type std::out_of_range if there is no
+	 *  \throw Throws an exception of type std::range_error if there is no
 	 *         object stored for the mapped lookup type according to the type
 	 *         mapper used or passes any exception by the typemappers get
 	 *         function (usually bad_mapping if the mapped lookup type is

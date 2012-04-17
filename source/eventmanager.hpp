@@ -165,10 +165,15 @@ public:
 	 * \param handler The event handler to be connected.
 	 * \param position Whether to add the handler to the front or back of its priority group.
 	 */
-	template<typename EventType> signal::connection connect(event_handler_type handler, signal_type::group_type group, signal::connect_position position = signal::at_back) {
+	template<typename EventType> signal::connection connect(signal_type::group_type group, event_handler_type handler, signal::connect_position position = signal::at_back) {
 		return connect(event_id<EventType>(), group, handler, position);
 	}
 
+	/**
+	 * \brief Handles an event.
+	 *
+	 * Calls the connected event handlers for the passed event.
+	 */
 	virtual void handle(event::pointer) = 0;
 
 	/// @}

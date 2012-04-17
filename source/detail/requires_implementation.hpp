@@ -32,7 +32,7 @@ namespace detail {
 
 template<class Module> struct requires_implementation {
 	requires_implementation(context con) {
-		module_base &module = con.module<Module>();
+		con.module<Module>();
 	}
 };
 

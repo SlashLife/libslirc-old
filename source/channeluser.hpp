@@ -41,7 +41,6 @@ class channeluser_list;
  */
 class channeluser {
 private:
-	typedef std::weak_ptr<channeluser> weak_pointer;
 	friend class channeluser_list;
 
 	channeluser() = delete;
@@ -56,12 +55,22 @@ public:
 	/**
 	 * \brief Pointer type used for weakly referencing channeluser entities.
 	 */
+	typedef std::shared_ptr<channeluser> weak_pointer;
 
-	static pointer SLIRCAPI create(channel::pointer, user::pointer);
+	/**
+	 * \brief Creates a new channeluser entity.
+	 *
+	 * \param channel The channel this entity belongs to.
+	 * \param user The user this entity belongs to.
+	 */
+	static pointer SLIRCAPI create(channel::pointer channel, user::pointer user);
+
+	/**
+	 * \brief Detaches this channeluser from all tracking lists.
+	 */
+	void SLIRCAPI detach();
 
 	typemap<> data;
-
-	void SLIRCAPI detach();
 
 	/**
 	 * \brief Enables tracking for a channeluser_list.

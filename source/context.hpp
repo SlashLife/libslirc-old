@@ -128,7 +128,7 @@ public:
 		Module *module_instance = dynamic_cast<Module *>(impl->get_module(key));
 
 		if (!module_instance) {
-			throw std::range_error("No such module.");
+			throw std::range_error(std::string("No such module: ") + typeid(Module).name());
 		}
 
 		return *module_instance;
@@ -156,7 +156,7 @@ public:
 		const Module *module_instance = dynamic_cast<const Module *>(impl->get_module(key));
 
 		if (!module_instance) {
-			throw std::range_error("No such module.");
+			throw std::range_error(std::string("No such module: ") + typeid(Module).name());
 		}
 
 		return *module_instance;

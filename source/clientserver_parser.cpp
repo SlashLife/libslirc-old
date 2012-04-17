@@ -65,6 +65,7 @@ void slirc::clientserver_parser::data_handler(event::pointer evp) {
 
 		{ origin org;
 			org.raw = raw.args[0].substr(1);
+			org.mask = usermask(org.raw);
 			data.set(org);
 		}
 
@@ -221,9 +222,12 @@ void slirc::clientserver_parser::data_handler(event::pointer evp) {
 		else if (raw.args[1] == "KICK" && raw.args.size() >= 4) {
 			ev.propagate<kick>();
 
+			target tgt;
+				tgt.raw = raw.args[2];
+			ev.data.set(tgt);
+
 			kick kck;
-				kck.nick = raw.args[3];
-				kck.from = raw.args[2];
+				kck.delinquent = raw.args[3];
 			ev.data.set(kck);
 
 			if (raw.args.size() > 4) {

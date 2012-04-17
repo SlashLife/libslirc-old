@@ -120,7 +120,7 @@ void slirc::socket_connection::status_callback(socket &, const socket::status_ty
 
 				ev->propagate<connection::connecting>();
 
-				// TODO: Add tags
+				// TODO: Add tags?
 			}
 			break;
 
@@ -132,7 +132,7 @@ void slirc::socket_connection::status_callback(socket &, const socket::status_ty
 
 				ev->propagate<connection::connected>();
 
-				// TODO: Add tags
+				// TODO: Add tags?
 			}
 			break;
 

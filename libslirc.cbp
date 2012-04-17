@@ -79,7 +79,11 @@
 		<Unit filename="include\slirc\typemap.hpp" />
 		<Unit filename="include\slirc\types.hpp" />
 		<Unit filename="include\slirc\usermask.hpp" />
+		<Unit filename="source\casemapping.cpp" />
 		<Unit filename="source\casemapping.hpp" />
+		<Unit filename="source\channel.hpp" />
+		<Unit filename="source\channeluser.cpp" />
+		<Unit filename="source\channeluser.hpp" />
 		<Unit filename="source\clientserver_parser.cpp" />
 		<Unit filename="source\clientserver_parser.hpp" />
 		<Unit filename="source\config.hpp" />
@@ -92,6 +96,8 @@
 		<Unit filename="source\context.hpp" />
 		<Unit filename="source\contextgroup.cpp" />
 		<Unit filename="source\contextgroup.hpp" />
+		<Unit filename="source\detail\casemapping.cpp" />
+		<Unit filename="source\detail\casemapping.hpp" />
 		<Unit filename="source\detail\castable_any.hpp" />
 		<Unit filename="source\detail\context_implementation.cpp" />
 		<Unit filename="source\detail\context_implementation.hpp" />
@@ -132,6 +138,7 @@
 		<Unit filename="source\tcpsocket.hpp" />
 		<Unit filename="source\time.hpp" />
 		<Unit filename="source\typemap.hpp" />
+		<Unit filename="source\user.hpp" />
 		<Unit filename="source\usermanager.hpp" />
 		<Unit filename="source\usermask.cpp" />
 		<Unit filename="source\usermask.hpp" />

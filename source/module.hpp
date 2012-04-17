@@ -75,7 +75,7 @@ public:
 	 *
 	 * \throw std::range_error if the context is not valid anymore. This can happen if the context is in the process of shutting down.
 	 */
-	slirc::context context() const;
+	slirc::context SLIRCAPI context() const;
 
 	/**
 	 * \brief Virtual destructor.

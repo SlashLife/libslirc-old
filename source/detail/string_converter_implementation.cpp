@@ -84,18 +84,19 @@ namespace {
 			bufiterator = bufbegin;
 			outbytesleft = bufend - bufiterator;
 
-			result = iconv(iconv_.iconv, &iterator, &inbytesleft, &bufiterator, &outbytesleft);
+            // TODO: Make sure if const_cast is necessary and safe
+			result = iconv(iconv_.iconv, const_cast<char**>(&iterator), &inbytesleft, &bufiterator, &outbytesleft);
 
 			if (bufbegin != bufiterator) {
 				output += output_type(buffer, (bufiterator-bufbegin) / sizeof(typename output_type::value_type));
 			}
 
-			if (-1 == result && E2BIG == errno) {
+			if (static_cast<size_t>(-1) == result && E2BIG == errno) {
 				// more work to do
 				continue;
 			}
 
-			if (-1 == result) {
+			if (static_cast<size_t>(-1) == result) {
 				stringconverter::error_type error_code = stringconverter::unknown_error;
 
 				if (EILSEQ == errno) {

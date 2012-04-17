@@ -33,7 +33,7 @@
 namespace slirc {
 
 /**
- * \brief Represents a user.
+ * \brief Represents a channel.
  */
 class channel {
 public:

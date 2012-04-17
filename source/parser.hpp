@@ -25,9 +25,12 @@
 
 #include "config.hpp"
 
+#include "channel.hpp"
+#include "channeluser.hpp"
 #include "event.hpp"
 #include "module.hpp"
 #include "string.hpp"
+#include "user.hpp"
 
 namespace slirc {
 
@@ -156,12 +159,7 @@ public:
 		/**
 		 * \brief The nickname of the deliquent.
 		 */
-		binary nick;
-
-		/**
-		 * \brief The name of the channel from which \ref nick was kicked.
-		 */
-		binary from;
+		binary delinquent;
 	};
 
 	/**
@@ -295,7 +293,30 @@ public:
 		 * This can either be a usermask or a server name.
 		 */
 		binary raw;
-		// TODO: add and fill "text" fields
+
+		/**
+		 * \brief Usermask of the origin.
+		 */
+		usermask mask;
+
+		/**
+		 * \brief Pointer to the user (if any).
+		 *
+		 * This gets filled by a usermanager module.
+		 */
+		slirc::user::pointer user;
+
+		/**
+		 * \brief Pointer to the channeluser (if any).
+		 *
+		 * This gets filled by a channelmanager module if there is a channel
+		 * target and the user is on that channel.
+		 *
+		 * \note May be a null pointer even for channel messages if the message
+		 *       is sent by a person not on that channel (e.g. if the channel
+		 *       is \c -n).
+		 */
+		slirc::channeluser::pointer channeluser;
 	};
 
 	/**
@@ -305,14 +326,35 @@ public:
 	 */
 	struct target {
 		/**
-		 * \brief Textual representation of the origin.
+		 * \brief Textual representation of the target.
 		 *
 		 * Depending on the context, this can be a nick name, a user mask,
 		 * a channel name or a server name. In some events the event clearly
 		 * defines which one it is, in other events it can be any.
 		 */
 		binary raw;
-		// TODO: add and fill user::pointer, channel::pointer, channeluser::pointer
+
+		/**
+		 * \brief Pointer to the target user (if any).
+		 *
+		 * Filled by the usermanager module.
+		 */
+		slirc::user::pointer user;
+
+		/**
+		 * \brief Pointer to the target channel (if any).
+		 *
+		 * Filled by the channelmanager module.
+		 */
+		slirc::channel::pointer channel;
+
+		/**
+		 * \brief Pointer to the channeluser (if any).
+		 *
+		 * Filled by the channelmanager module if both a user and a channel
+		 * are targetet.
+		 */
+		slirc::channeluser::pointer channeluser;
 	};
 };
 
